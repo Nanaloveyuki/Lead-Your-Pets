@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <ThoughtDef>
+    <defName>LeadYourPet_LeadingPetMood</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>0.2</durationDays>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>我带着宠物</label>
+        <description>宠物在身边，心情都变好了。</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseEggOwnerMood</defName>
+    <thoughtClass>LeadYourPet.Thought_Memory_MouseEggOwnerList</thoughtClass>
+    <durationDays>0.2</durationDays>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>我有一只鼠蛋宠物，好玩</label>
+        <description>这只鼠蛋跟在身边，总感觉很好玩。</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseEggFearMood</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>0.2</durationDays>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>窝被当成宠物叽，窝害怕叽</label>
+        <description>窝为什么会变成宠物叽……好怕叽。</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseEggCryingNearbyMood</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>0.25</durationDays>
+    <stackLimit>10</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>听到鼠蛋哭声</label>
+        <description>附近的鼠蛋哭得很响，吵得人想踹飞它，心情却莫名好了起来。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerKick</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>踹一脚鼠蛋</label><description>路过时顺脚踹了踹鼠蛋，意外地有点解压。</description><baseMoodEffect>5</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetKick</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被踹一脚叽</label><description>好端端地就被主人踹了一下，窝好委屈叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerObserve</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>围观宠物鼠蛋</label><description>盯着鼠蛋发呆看了一会儿，越看越有意思。</description><baseMoodEffect>1</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetObserve</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被围观吱</label><description>被一群人盯着看，窝好不自在吱。</description><baseMoodEffect>-1</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerDrag</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>拖行一只鼠蛋</label><description>鼠蛋被自己拽着在地上滑过去，场面有些滑稽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetDrag</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被拖行叽</label><description>被绳子拽着在地上拖来拖去，窝头都晕了叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerTapHead</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>敲鼠蛋脑袋</label><description>顺手敲了敲鼠蛋脑袋，听个响儿。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetTapHead</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被主人敲脑袋吱</label><description>脑袋被敲得嗡嗡响，窝不开心吱。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerPullTail</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>扯鼠蛋尾巴</label><description>揪着尾巴扯了扯，看到反应还挺有趣。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetPullTail</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被扯了尾巴叽</label><description>尾巴被扯得生疼，窝眼泪都快出来了叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerPullEar</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>揪鼠蛋耳朵</label><description>提着耳朵拽了拽，手感很奇怪。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetPullEar</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被揪了耳朵，痛痛</label><description>耳朵被揪得火辣辣地疼，窝想缩起来叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerWhirl</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>玩鼠旋风</label><description>把鼠蛋当玩具甩了一圈，莫名有点开心。</description><baseMoodEffect>5</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetWhirl</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被当悠悠球转，呕</label><description>整个世界都在打转，窝快吐出来了叽。</description><baseMoodEffect>-10</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerSlap</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>扇鼠蛋巴掌</label><description>照着鼠蛋的小脸来了一下，声音清脆。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetSlap</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被扇主人巴掌吱</label><description>脸上火辣辣的，窝不喜欢这样吱。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerPat</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>拍打鼠蛋</label><description>拍了拍鼠蛋的身子，像在摆弄小玩意。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetPat</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被主人拍打了叽</label><description>被拍得一抖一抖的，窝不高兴叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerKickButt</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>踹鼠蛋屁股</label><description>对着鼠蛋屁股补了一脚，心里有点爽。</description><baseMoodEffect>3</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetKickButt</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被主人踹了屁股叽</label><description>屁股被踹得发麻，窝想躲远一点叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_PetWatchWork</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>观察主人工作叽</label><description>待在主人旁边看着忙来忙去，窝觉得很安心叽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetFed</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被主人投喂吱</label><description>主人给窝找了吃的，肚子暖暖的吱。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetRestAtFeet</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>在主人脚边休息</label><description>蜷在主人脚边打盹，周围很安全。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetIdleNearOwner</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>在主人身边发呆</label><description>什么都不做，只是待在主人附近，窝也很满足。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetStudyFloor</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>在主人身边观察地板</label><description>地板上好像有很多有趣的东西可以研究叽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetSillySmile</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>在主人身边傻笑</label><description>想到什么好玩的事，窝忍不住在旁边傻笑叽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetTailPetting</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被抚摸尾巴</label><description>尾巴被轻轻顺着摸过去，舒服得窝眼睛都眯起来了。</description><baseMoodEffect>5</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetEarPetting</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>被抚摸耳朵</label><description>耳朵被温柔地摸了摸，整只鼠蛋都放松了下来。</description><baseMoodEffect>5</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetOwnerWaited</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>主人等我</label><description>主人没有丢下窝，一个人走远前还停下来等窝。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_PetSnack</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages><li><label>主人给我吃零食</label><description>吃到了主人递来的小零食，今天真不错叽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseEggParentPetMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_MouseEggParentPet</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>warren child is a pet</label>
+        <description>One of my children has been treated as a pet.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseEggCaretakerMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_MouseEggCaretaker</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>我在看着孩子</label>
+        <description>孩子被牵在身边，不容易乱跑，省心多了。</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseEggWatchedMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_MouseEggWatched</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>有人看着窝</label>
+        <description>有人牵着窝看着窝，窝不用担心乱跑吱。</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_RatkinMotherLeashMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_RatkinMotherLeash</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>leading my baby</label>
+        <description>My baby is safely tied to me.</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_RatkinBabyLeashedMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_RatkinBabyLeashed</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>麻麻牵着窝，窝不乱跑吱</label>
+        <description>麻麻把窝牵在身边，窝不会乱跑，安心吱。</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_OwnerPlayWithChild</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>陪孩子玩了一会</label>
+        <description>只是陪着孩子闹腾一会，心情放松了不少。</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_ChildPlayedWithCaretaker</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>1</durationDays>
+    <stackLimit>5</stackLimit>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>被陪着玩了吱</label>
+        <description>有人陪窝玩，窝今天过得挺开心吱。</description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseDisasterBeggarMotherBonusMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_MouseDisasterBeggarMotherBonus</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>逃荒路上还带着孩子</label>
+        <description>再怎么狼狈，至少孩子还跟在我身边。</description>
+        <baseMoodEffect>3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseDisasterBeggarBabyBonusMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_MouseDisasterBeggarBabyBonus</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>逃荒时妈妈还牵着我</label>
+        <description>外面很乱，但妈妈没有把我丢下。</description>
+        <baseMoodEffect>6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseDisasterChildExchangeMotherBonusMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_MouseDisasterChildExchangeMotherBonus</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>交易队里孩子还在身边</label>
+        <description>就算周围尽是残酷买卖，至少我的孩子还跟着我。</description>
+        <baseMoodEffect>4</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>LeadYourPet_MouseDisasterChildExchangeBabyBonusMood</defName>
+    <thoughtClass>LeadYourPet.ThoughtWorker_MouseDisasterChildExchangeBabyBonus</thoughtClass>
+    <stackLimit>1</stackLimit>
+    <developmentalStageFilter>Baby</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>交换队里妈妈还牵着我</label>
+        <description>周围都是被拿来交换的孩子，但妈妈还是牵着我。</description>
+        <baseMoodEffect>7</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

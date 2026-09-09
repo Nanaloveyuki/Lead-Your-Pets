@@ -1,0 +1,319 @@
+﻿using Xunit;
+
+namespace LeadYourPet.Tests
+{
+    public class TravelAssignmentRulesTests
+    {
+        [Fact]
+        public void BlocksCarryForProtectedMouseEggEvenWhenColonistCarryWouldOtherwiseBeAllowed()
+        {
+            Assert.True(LeadYourPetRules.ShouldBlockProtectedCarry(
+                isProtectedLeashedMouseEgg: true,
+                allowColonistCarry: true));
+        }
+
+        [Fact]
+        public void TreatsLeashedMouseEggChildAsProtected()
+        {
+            Assert.True(LeadYourPetRules.ShouldTreatAsProtectedLeashedMouseEgg(
+                isMouseEgg: true,
+                isBaby: false,
+                isChild: true,
+                hasProtectedLink: true,
+                hasProtectedState: false));
+        }
+
+        [Fact]
+        public void DropsCarriedTravelMouseEggAfterRegistrationWhenCarrierIsSpawned()
+        {
+            Assert.True(LeadYourPetRules.ShouldDropCarriedTravelMouseEggAfterRegistration(
+                registrationSucceeded: true,
+                carrierSpawned: true,
+                eggAlreadySpawned: false));
+        }
+
+        [Fact]
+        public void RegistersCarriedTravelMouseEggOnlyAfterDropToGroundSucceeds()
+        {
+            Assert.True(LeadYourPetRules.ShouldRegisterDroppedTravelMouseEgg(
+                hadCarriedMouseEgg: true,
+                dropSucceeded: true,
+                droppedPawnValid: true));
+
+            Assert.False(LeadYourPetRules.ShouldRegisterDroppedTravelMouseEgg(
+                hadCarriedMouseEgg: true,
+                dropSucceeded: false,
+                droppedPawnValid: true));
+
+            Assert.False(LeadYourPetRules.ShouldRegisterDroppedTravelMouseEgg(
+                hadCarriedMouseEgg: true,
+                dropSucceeded: true,
+                droppedPawnValid: false));
+        }
+
+        [Fact]
+        public void SkipsRandomTravelMouseEggFallbackWhenExistingCarriedEggWasAlreadyHandled()
+        {
+            Assert.True(LeadYourPetRules.ShouldSkipRandomTravelMouseEggFallback(
+                hadCarriedMouseEgg: true,
+                carriedEggRegistrationSucceeded: false));
+
+            Assert.False(LeadYourPetRules.ShouldSkipRandomTravelMouseEggFallback(
+                hadCarriedMouseEgg: false,
+                carriedEggRegistrationSucceeded: false));
+        }
+
+        [Fact]
+        public void DropsPawnImmediatelyAfterItBecomesProtectedMouseEggPetWhileCarried()
+        {
+            Assert.True(LeadYourPetRules.ShouldDropCarriedPawnAfterBecomingMouseEggPet(
+                isProtectedMouseEggPet: true,
+                pawnHasCarrier: true,
+                carrierHasCarryTracker: true,
+                carrierIsCarryingPawn: true));
+        }
+
+        [Fact]
+        public void DoesNotDropCarriedPawnWhenItIsNotProtectedMouseEggPet()
+        {
+            Assert.False(LeadYourPetRules.ShouldDropCarriedPawnAfterBecomingMouseEggPet(
+                isProtectedMouseEggPet: false,
+                pawnHasCarrier: true,
+                carrierHasCarryTracker: true,
+                carrierIsCarryingPawn: true));
+        }
+
+        [Fact]
+        public void AllowsNearbyMouseDisasterChildFallbackWhenChildIsUnownedAndNearTrader()
+        {
+            Assert.True(LeadYourPetRules.IsEligibleNearbyMouseDisasterTravelChild(
+                isTravelChild: true,
+                isSpawned: true,
+                isDead: false,
+                sameFactionAsTraderLord: true,
+                hasNoLord: true,
+                isNearTrader: true));
+        }
+
+        [Fact]
+        public void RejectsNearbyMouseDisasterChildFallbackWhenChildAlreadyHasLord()
+        {
+            Assert.False(LeadYourPetRules.IsEligibleNearbyMouseDisasterTravelChild(
+                isTravelChild: true,
+                isSpawned: true,
+                isDead: false,
+                sameFactionAsTraderLord: true,
+                hasNoLord: false,
+                isNearTrader: true));
+        }
+
+        [Fact]
+        public void BlocksRimTalkToddlerPickupForProtectedLeashedMouseEgg()
+        {
+            Assert.True(LeadYourPetRules.ShouldBlockExternalToddlerPickup(
+                isProtectedLeashedMouseEgg: true,
+                jobDefName: "RimTalk_PickUpToddler"));
+        }
+
+        [Fact]
+        public void BlocksRimTalkBeingCarriedStateForProtectedLeashedMouseEgg()
+        {
+            Assert.True(LeadYourPetRules.ShouldBlockExternalToddlerPickup(
+                isProtectedLeashedMouseEgg: true,
+                jobDefName: "RimTalk_BeingCarried_Idle"));
+        }
+
+        [Theory]
+        [InlineData("PlayCrib")]
+        [InlineData("BePlayedWith")]
+        [InlineData("BringBabyToSafety")]
+        [InlineData("PutInCrib")]
+        [InlineData("CYB_BatheToddler")]
+        public void BlocksToddlersExpandedHoldJobsForProtectedLeashedMouseEgg(string jobDefName)
+        {
+            Assert.True(LeadYourPetRules.ShouldBlockExternalToddlerPickup(
+                isProtectedLeashedMouseEgg: true,
+                jobDefName: jobDefName));
+        }
+
+        [Theory]
+        [InlineData("Toddlers.JobDriver_BePlayedWith")]
+        [InlineData("Toddlers.JobDriver_PlayCrib")]
+        [InlineData("RimWorld.JobDriver_BabyPlay")]
+        public void EndsToddlersExpandedHoldDriversForProtectedLeashedMouseEgg(string driverTypeName)
+        {
+            Assert.True(LeadYourPetRules.ShouldEndExternalToddlerHoldJob(
+                isProtectedLeashedMouseEgg: true,
+                driverTypeName: driverTypeName));
+        }
+
+        [Fact]
+        public void AllowsRimTalkDialogueForProtectedLeashedMouseEgg()
+        {
+            Assert.False(LeadYourPetRules.ShouldBlockExternalDialogue(
+                isProtectedLeashedMouseEgg: true,
+                integrationName: "RimTalk"));
+        }
+
+        [Fact]
+        public void AllowsRimTalkConversationWhenOnlyMouseEggTargetFilterRejectedIt()
+        {
+            Assert.True(LeadYourPetRules.ShouldAllowRimTalkMouseEggConversation(
+                originalAllowed: false,
+                targetIsMouseEggPawn: true,
+                initiatorValid: true,
+                targetValid: true,
+                initiatorCanTalk: true,
+                initiatorIsRimTalkPlayer: false,
+                initiatorCanReachTarget: true));
+        }
+
+        [Fact]
+        public void DoesNotAllowRimTalkConversationForInvalidMouseEggTarget()
+        {
+            Assert.False(LeadYourPetRules.ShouldAllowRimTalkMouseEggConversation(
+                originalAllowed: false,
+                targetIsMouseEggPawn: true,
+                initiatorValid: true,
+                targetValid: false,
+                initiatorCanTalk: true,
+                initiatorIsRimTalkPlayer: false,
+                initiatorCanReachTarget: true));
+        }
+
+        [Fact]
+        public void DoesNotOverrideExistingRimTalkConversationDecision()
+        {
+            Assert.False(LeadYourPetRules.ShouldAllowRimTalkMouseEggConversation(
+                originalAllowed: true,
+                targetIsMouseEggPawn: true,
+                initiatorValid: true,
+                targetValid: true,
+                initiatorCanTalk: true,
+                initiatorIsRimTalkPlayer: false,
+                initiatorCanReachTarget: true));
+        }
+
+        [Fact]
+        public void TreatsValidMouseEggPawnAsRimTalkEligible()
+        {
+            Assert.True(LeadYourPetRules.ShouldTreatMouseEggAsRimTalkEligible(
+                originalEligible: false,
+                isMouseEggPawn: true,
+                pawnValid: true));
+        }
+
+        [Fact]
+        public void DoesNotTreatInvalidMouseEggPawnAsRimTalkEligible()
+        {
+            Assert.False(LeadYourPetRules.ShouldTreatMouseEggAsRimTalkEligible(
+                originalEligible: false,
+                isMouseEggPawn: true,
+                pawnValid: false));
+        }
+
+        [Fact]
+        public void AssignsGeneratedTravelMouseEggToCaravanFaction()
+        {
+            Assert.True(LeadYourPetRules.ShouldAssignGeneratedTravelMouseEggFaction(
+                hasGeneratedPawn: true,
+                hasFaction: true));
+        }
+
+        [Fact]
+        public void OrdinaryTravelCaravanAlwaysTargetsTwoMouseEggPets()
+        {
+            Assert.Equal(2, LeadYourPetRules.ResolveOrdinaryTravelMouseEggTargetCount(
+                traderLord: true,
+                hasEligibleAdults: true));
+            Assert.Equal(0, LeadYourPetRules.ResolveOrdinaryTravelMouseEggTargetCount(
+                traderLord: false,
+                hasEligibleAdults: true));
+            Assert.Equal(0, LeadYourPetRules.ResolveOrdinaryTravelMouseEggTargetCount(
+                traderLord: true,
+                hasEligibleAdults: false));
+        }
+
+        [Fact]
+        public void OverridesBabyCryMoodForMouseEggPawnOnly()
+        {
+            Assert.True(LeadYourPetRules.ShouldOverrideBabyCryMoodForMouseEgg(
+                sourceIsMouseEggPawn: true,
+                sourceIsMouseEggPet: true,
+                hearerIsMouseEggPawn: false,
+                hearerCanReceiveMood: true));
+            Assert.False(LeadYourPetRules.ShouldOverrideBabyCryMoodForMouseEgg(
+                sourceIsMouseEggPawn: false,
+                sourceIsMouseEggPet: true,
+                hearerIsMouseEggPawn: false,
+                hearerCanReceiveMood: true));
+            Assert.False(LeadYourPetRules.ShouldOverrideBabyCryMoodForMouseEgg(
+                sourceIsMouseEggPawn: true,
+                sourceIsMouseEggPet: true,
+                hearerIsMouseEggPawn: true,
+                hearerCanReceiveMood: true));
+            Assert.False(LeadYourPetRules.ShouldOverrideBabyCryMoodForMouseEgg(
+                sourceIsMouseEggPawn: true,
+                sourceIsMouseEggPet: false,
+                hearerIsMouseEggPawn: false,
+                hearerCanReceiveMood: true));
+        }
+
+        [Fact]
+        public void DoesNotBlockUnrelatedExternalJob()
+        {
+            Assert.False(LeadYourPetRules.ShouldBlockExternalToddlerPickup(
+                isProtectedLeashedMouseEgg: true,
+                jobDefName: "Goto"));
+        }
+
+        [Fact]
+        public void DoesNotOfferManualMouseEggOneWayMenu()
+        {
+            Assert.False(LeadYourPetRules.ShouldOfferManualMouseEggInteractionMenu(
+                ownedByActor: true,
+                isBidirectionalMenu: false,
+                bidirectionalBlocked: false));
+        }
+
+        [Fact]
+        public void KeepsManualMouseEggTwoWayMenuWhenNotBlocked()
+        {
+            Assert.True(LeadYourPetRules.ShouldOfferManualMouseEggInteractionMenu(
+                ownedByActor: true,
+                isBidirectionalMenu: true,
+                bidirectionalBlocked: false));
+        }
+
+        [Fact]
+        public void PausesLeashProcessingWhenCarriedPetCouldNotBeDroppedYet()
+        {
+            Assert.True(LeadYourPetRules.ShouldPauseLeashForCarriedPet(
+                petWasCarried: true,
+                dropSucceeded: false,
+                petStillUnavailable: true));
+        }
+
+        [Fact]
+        public void TreatsPlayerLeashingFriendlyVisitorMouseEggAsAggressive()
+        {
+            Assert.True(LeadYourPetRules.ShouldTreatVisitorMouseEggPetLeashAsAggressive(
+                masterIsPlayer: true,
+                petIsRatkinHumanlike: true,
+                petIsBabyOrChild: true,
+                petFactionExists: true,
+                petFactionIsPlayer: false,
+                petFactionHostileToPlayer: false,
+                petInFriendlyVisitorLord: true));
+
+            Assert.False(LeadYourPetRules.ShouldTreatVisitorMouseEggPetLeashAsAggressive(
+                masterIsPlayer: true,
+                petIsRatkinHumanlike: true,
+                petIsBabyOrChild: true,
+                petFactionExists: true,
+                petFactionIsPlayer: true,
+                petFactionHostileToPlayer: false,
+                petInFriendlyVisitorLord: true));
+        }
+    }
+}

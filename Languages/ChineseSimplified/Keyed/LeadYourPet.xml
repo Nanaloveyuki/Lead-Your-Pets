@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <LeadYourPet_LabelWithReason>{0}（{1}）</LeadYourPet_LabelWithReason>
+
+  <LeadYourPet_StopLeash>取消牵引</LeadYourPet_StopLeash>
+  <LeadYourPet_LeadPet>牵着宠物</LeadYourPet_LeadPet>
+  <LeadYourPet_StopMouseEggLeash>取消鼠蛋宠物牵引</LeadYourPet_StopMouseEggLeash>
+  <LeadYourPet_MouseEggOneWay>鼠蛋单向互动...</LeadYourPet_MouseEggOneWay>
+  <LeadYourPet_MouseEggTwoWay>鼠蛋双向互动...</LeadYourPet_MouseEggTwoWay>
+  <LeadYourPet_SetAsPetMouseEggAndLeash>设为宠物鼠蛋并牵着</LeadYourPet_SetAsPetMouseEggAndLeash>
+  <LeadYourPet_MouseEggNoLongerPettable>该鼠蛋已经不能作为宠物</LeadYourPet_MouseEggNoLongerPettable>
+  <LeadYourPet_TightenLeash>收紧拴绳</LeadYourPet_TightenLeash>
+  <LeadYourPet_TightenLeashDesc>把正在牵引的鼠蛋立刻拉回主人周围的 3x3 区域。</LeadYourPet_TightenLeashDesc>
+
+  <LeadYourPet_Message_StartedLeash>{0} 开始牵着 {1}</LeadYourPet_Message_StartedLeash>
+  <LeadYourPet_Message_EndedLeash>{0} 不再牵着 {1}</LeadYourPet_Message_EndedLeash>
+
+  <LeadYourPet_Reason_Unreachable>无法到达</LeadYourPet_Reason_Unreachable>
+  <LeadYourPet_Reason_NeedsOpinionAbove20>需要双方社会关系大于 20</LeadYourPet_Reason_NeedsOpinionAbove20>
+  <LeadYourPet_Reason_AdultCannotBePet>成人不能当宠物</LeadYourPet_Reason_AdultCannotBePet>
+  <LeadYourPet_Reason_NotRatkinMouseEgg>不是有效的鼠族鼠蛋目标</LeadYourPet_Reason_NotRatkinMouseEgg>
+  <LeadYourPet_Reason_Dead>已经死亡</LeadYourPet_Reason_Dead>
+  <LeadYourPet_Reason_TooOld>年龄过大</LeadYourPet_Reason_TooOld>
+  <LeadYourPet_Reason_NotOnCurrentMap>不在当前地图</LeadYourPet_Reason_NotOnCurrentMap>
+  <LeadYourPet_Reason_NoFoodNeed>目标不需要进食</LeadYourPet_Reason_NoFoodNeed>
+  <LeadYourPet_Reason_NoSuitableFood>没有合适的食物</LeadYourPet_Reason_NoSuitableFood>
+  <LeadYourPet_Reason_NoUsableNutrition>没有可用营养</LeadYourPet_Reason_NoUsableNutrition>
+
+  <LeadYourPet_Interaction_Kick>踢鼠蛋</LeadYourPet_Interaction_Kick>
+  <LeadYourPet_Interaction_Observe>观察宠物鼠蛋</LeadYourPet_Interaction_Observe>
+  <LeadYourPet_Interaction_Drag>拖行鼠蛋</LeadYourPet_Interaction_Drag>
+  <LeadYourPet_Interaction_TapHead>敲鼠蛋脑袋</LeadYourPet_Interaction_TapHead>
+  <LeadYourPet_Interaction_PullTail>拽鼠蛋尾巴</LeadYourPet_Interaction_PullTail>
+  <LeadYourPet_Interaction_PullEar>揪鼠蛋耳朵</LeadYourPet_Interaction_PullEar>
+  <LeadYourPet_Interaction_Whirl>甩鼠蛋转圈</LeadYourPet_Interaction_Whirl>
+  <LeadYourPet_Interaction_Slap>扇鼠蛋巴掌</LeadYourPet_Interaction_Slap>
+  <LeadYourPet_Interaction_Pat>拍打鼠蛋</LeadYourPet_Interaction_Pat>
+  <LeadYourPet_Interaction_KickButt>踢鼠蛋屁股</LeadYourPet_Interaction_KickButt>
+  <LeadYourPet_Interaction_WatchWork>看主人干活</LeadYourPet_Interaction_WatchWork>
+  <LeadYourPet_Interaction_Fed>被主人喂食</LeadYourPet_Interaction_Fed>
+  <LeadYourPet_Interaction_RestAtFeet>在主人脚边休息</LeadYourPet_Interaction_RestAtFeet>
+  <LeadYourPet_Interaction_IdleNearOwner>在主人身边发呆</LeadYourPet_Interaction_IdleNearOwner>
+  <LeadYourPet_Interaction_StudyFloor>在主人身边看地板</LeadYourPet_Interaction_StudyFloor>
+  <LeadYourPet_Interaction_SillySmile>对主人傻笑</LeadYourPet_Interaction_SillySmile>
+  <LeadYourPet_Interaction_TailPetting>被摸尾巴</LeadYourPet_Interaction_TailPetting>
+  <LeadYourPet_Interaction_EarPetting>被摸耳朵</LeadYourPet_Interaction_EarPetting>
+  <LeadYourPet_Interaction_OwnerWaited>主人在等我</LeadYourPet_Interaction_OwnerWaited>
+  <LeadYourPet_Interaction_Snack>主人给我零食</LeadYourPet_Interaction_Snack>
+  <LeadYourPet_Reason_InvalidTarget>无效目标</LeadYourPet_Reason_InvalidTarget>
+  <LeadYourPet_Reason_InvalidPetStatus>当前身份不能被当成宠物</LeadYourPet_Reason_InvalidPetStatus>
+  <LeadYourPet_Reason_LeashedByNonPlayer>已经被非玩家派系牵引</LeadYourPet_Reason_LeashedByNonPlayer>
+  <LeadYourPet_Reason_NotBaby>目标不是婴儿</LeadYourPet_Reason_NotBaby>
+  <LeadYourPet_Reason_NotMotherChild>目标不是这位鼠妈的婴儿</LeadYourPet_Reason_NotMotherChild>
+  <LeadYourPet_Reason_MissingTail>缺少尾巴</LeadYourPet_Reason_MissingTail>
+  <LeadYourPet_Reason_MissingEar>缺少耳朵</LeadYourPet_Reason_MissingEar>
+  <LeadYourPet_Reason_MissingHead>缺少头部</LeadYourPet_Reason_MissingHead>
+
+  <LeadYourPet_AnchorPetsHere>将宠物固定在此</LeadYourPet_AnchorPetsHere>
+  <LeadYourPet_AnchorPetsToThing>将宠物拴在 {0}</LeadYourPet_AnchorPetsToThing>
+  <LeadYourPet_AnchorPetsToPawn>将宠物拴在 {0}</LeadYourPet_AnchorPetsToPawn>
+  <LeadYourPet_ClearAnchors>解除固定</LeadYourPet_ClearAnchors>
+  <LeadYourPet_ClearAnchorsDesc>移除当前所有被固定的牵引宠物。</LeadYourPet_ClearAnchorsDesc>
+
+  <LeadYourPet_Message_StartedMotherLeash>{0} 开始带着婴儿 {1}</LeadYourPet_Message_StartedMotherLeash>
+  <LeadYourPet_Message_EndedMotherLeash>{0} 不再带着婴儿 {1}</LeadYourPet_Message_EndedMotherLeash>
+  <LeadYourPet_Reason_MouseEggTooFarToLeash>鼠蛋超出可以开始牵引的最大距离</LeadYourPet_Reason_MouseEggTooFarToLeash>
+  <LeadYourPet_Settings_MouseEggLeashStartDistance>鼠蛋开始牵引最大距离：</LeadYourPet_Settings_MouseEggLeashStartDistance>
+</LanguageData>

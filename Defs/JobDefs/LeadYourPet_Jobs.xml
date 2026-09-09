@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <JobDef>
+    <defName>LeadYourPet_BeginLeash</defName>
+    <driverClass>LeadYourPet.JobDriver_BeginLeash</driverClass>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <checkOverrideOnDamage>Always</checkOverrideOnDamage>
+  </JobDef>
+
+  <JobDef>
+    <defName>LeadYourPet_EndLeash</defName>
+    <driverClass>LeadYourPet.JobDriver_BeginLeash</driverClass>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <checkOverrideOnDamage>Always</checkOverrideOnDamage>
+  </JobDef>
+
+  <JobDef>
+    <defName>LeadYourPet_FollowMaster</defName>
+    <driverClass>LeadYourPet.JobDriver_FollowLeashMaster</driverClass>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <checkOverrideOnDamage>Always</checkOverrideOnDamage>
+    <neverShowWeapon>true</neverShowWeapon>
+  </JobDef>
+
+  <JobDef>
+    <defName>LeadYourPet_MouseEggInteraction</defName>
+    <driverClass>LeadYourPet.JobDriver_MouseEggInteraction</driverClass>
+    <casualInterruptible>true</casualInterruptible>
+    <playerInterruptible>true</playerInterruptible>
+    <checkOverrideOnDamage>Always</checkOverrideOnDamage>
+  </JobDef>
+</Defs>
