@@ -11,10 +11,12 @@
     <li>
       <packageId>brrainz.harmony</packageId>
       <displayName>Harmony</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</steamWorkshopUrl>
     </li>
     <li>
       <packageId>Solaris.RatkinRaceMod</packageId>
       <displayName>NewRatkinPlus[1.6]</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2898638732</steamWorkshopUrl>
     </li>
   </modDependencies>
   <loadAfter>
