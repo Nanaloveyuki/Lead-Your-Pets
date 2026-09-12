@@ -180,7 +180,8 @@ namespace LeadYourPet
                 masterInMentalState: master.InMentalState,
                 masterIsCaravanMember: master.IsCaravanMember(),
                 exemptTravelMouseEggCaravanLeash: exemptTravelMouseEggCaravanLeash,
-                playerMasterExitsMapOnArrival: master.Faction == Faction.OfPlayer && master.CurJob != null && master.CurJob.exitMapOnArrival);
+                playerMasterExitsMapOnArrival: master.Faction == Faction.OfPlayer && master.CurJob != null && master.CurJob.exitMapOnArrival,
+                preservePlayerCaravanLeash: LeadYourPetUtility.IsPlayerCaravanMaster(master));
         }
 
         private void EndLink(LeashLink link, bool showMessage)

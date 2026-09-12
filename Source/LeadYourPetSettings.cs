@@ -8,6 +8,7 @@ namespace LeadYourPet
         public int maxMouseEggPetLeashStartDistance = 10;
         public bool infiniteLeash;
         public bool showInteractionText = true;
+        public LeashedPawnMapExitBehavior leashedPawnMapExitBehavior = LeashedPawnMapExitBehavior.StayInPlace;
 
         public override void ExposeData()
         {
@@ -15,6 +16,7 @@ namespace LeadYourPet
             Scribe_Values.Look(ref maxMouseEggPetLeashStartDistance, "maxMouseEggPetLeashStartDistance", 10);
             Scribe_Values.Look(ref infiniteLeash, "infiniteLeash", false);
             Scribe_Values.Look(ref showInteractionText, "showInteractionText", true);
+            Scribe_Values.Look(ref leashedPawnMapExitBehavior, "leashedPawnMapExitBehavior", LeashedPawnMapExitBehavior.StayInPlace);
         }
     }
 }

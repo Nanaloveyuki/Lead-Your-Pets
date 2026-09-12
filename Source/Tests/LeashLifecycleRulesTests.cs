@@ -174,6 +174,27 @@ namespace LeadYourPet.Tests
         }
 
         [Fact]
+        public void KeepsPlayerLeashDuringCaravanExitPreparation()
+        {
+            Assert.False(LeadYourPetRules.ShouldBreakLeashLifecycle(
+                masterDestroyed: false,
+                petDestroyed: false,
+                masterSpawned: true,
+                petSpawned: true,
+                masterAndPetOnSameMap: true,
+                masterDead: false,
+                petDead: false,
+                masterDowned: false,
+                petDowned: false,
+                allowImmobilePetDowned: false,
+                masterInMentalState: false,
+                masterIsCaravanMember: false,
+                exemptTravelMouseEggCaravanLeash: false,
+                playerMasterExitsMapOnArrival: true,
+                preservePlayerCaravanLeash: true));
+        }
+
+        [Fact]
         public void KeepsNonPlayerTravelMouseEggLeashForCaravanMaster()
         {
             Assert.False(LeadYourPetRules.ShouldBreakLeashLifecycle(

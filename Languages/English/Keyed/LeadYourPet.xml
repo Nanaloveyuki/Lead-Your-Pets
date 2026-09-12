@@ -19,6 +19,7 @@
   <LeadYourPet_Reason_NeedsOpinionAbove20>needs both opinions above 20</LeadYourPet_Reason_NeedsOpinionAbove20>
   <LeadYourPet_Reason_AdultCannotBePet>adults cannot be pets</LeadYourPet_Reason_AdultCannotBePet>
   <LeadYourPet_Reason_NotRatkinMouseEgg>not a valid ratkin mouse egg</LeadYourPet_Reason_NotRatkinMouseEgg>
+  <LeadYourPet_Reason_NotHumanlikeJuvenile>not a humanlike juvenile under 14</LeadYourPet_Reason_NotHumanlikeJuvenile>
   <LeadYourPet_Reason_Dead>dead</LeadYourPet_Reason_Dead>
   <LeadYourPet_Reason_TooOld>too old</LeadYourPet_Reason_TooOld>
   <LeadYourPet_Reason_NotOnCurrentMap>not on current map</LeadYourPet_Reason_NotOnCurrentMap>
@@ -27,6 +28,10 @@
   <LeadYourPet_Reason_NoUsableNutrition>no usable nutrition</LeadYourPet_Reason_NoUsableNutrition>
   <LeadYourPet_Reason_MouseEggTooFarToLeash>mouse egg is too far away to leash</LeadYourPet_Reason_MouseEggTooFarToLeash>
   <LeadYourPet_Settings_MouseEggLeashStartDistance>Mouse egg start leash distance:</LeadYourPet_Settings_MouseEggLeashStartDistance>
+  <LeadYourPet_Settings_LeashedPawnMapExitBehavior>When a leash master leaves the map:</LeadYourPet_Settings_LeashedPawnMapExitBehavior>
+  <LeadYourPet_Settings_LeashedPawnMapExitBehavior_StayInPlace>Stay in place</LeadYourPet_Settings_LeashedPawnMapExitBehavior_StayInPlace>
+  <LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap>Leave the map when able</LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap>
+  <LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear>Disappear</LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear>
 
   <LeadYourPet_Interaction_Kick>Kick mouse egg</LeadYourPet_Interaction_Kick>
   <LeadYourPet_Interaction_Observe>Observe mouse egg</LeadYourPet_Interaction_Observe>

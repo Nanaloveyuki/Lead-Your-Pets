@@ -88,9 +88,10 @@ namespace LeadYourPet
             return currentTick - lastPoolTick >= cacheIntervalTicks;
         }
 
-        public static bool ShouldTreatAsMouseEgg(bool isRatkinHumanlike, bool isBaby, bool isChild, bool hasMeaningfulState, bool isTravelMouseEgg)
+        public static bool ShouldTreatAsMouseEgg(bool isRatkinHumanlike, bool isBaby, bool isChild, bool hasMeaningfulState, bool isTravelMouseEgg, bool isHumanlikeJuvenile = false)
         {
-            return isRatkinHumanlike && (isBaby || isChild || hasMeaningfulState || isTravelMouseEgg);
+            return (isRatkinHumanlike || isHumanlikeJuvenile)
+                && (isBaby || isChild || isHumanlikeJuvenile || hasMeaningfulState || isTravelMouseEgg);
         }
 
         public static bool ShouldBlockProtectedCarry(bool isProtectedLeashedMouseEgg, bool allowColonistCarry)
@@ -108,9 +109,9 @@ namespace LeadYourPet
                 && jobTargetMatchesPawn;
         }
 
-        public static bool ShouldTreatAsProtectedLeashedMouseEgg(bool isMouseEgg, bool isBaby, bool isChild, bool hasProtectedLink, bool hasProtectedState)
+        public static bool ShouldTreatAsProtectedLeashedMouseEgg(bool isMouseEgg, bool isBaby, bool isChild, bool hasProtectedLink, bool hasProtectedState, bool isHumanlikeJuvenile = false)
         {
-            return isMouseEgg && (isBaby || isChild) && (hasProtectedLink || hasProtectedState);
+            return isMouseEgg && (isBaby || isChild || isHumanlikeJuvenile) && (hasProtectedLink || hasProtectedState);
         }
 
         public static bool ShouldDropCarriedTravelMouseEggAfterRegistration(bool registrationSucceeded, bool carrierSpawned, bool eggAlreadySpawned)
@@ -350,7 +351,7 @@ namespace LeadYourPet
                 && petInFriendlyVisitorLord;
         }
 
-        public static bool ShouldBreakLeashLifecycle(bool masterDestroyed, bool petDestroyed, bool masterSpawned, bool petSpawned, bool masterAndPetOnSameMap, bool masterDead, bool petDead, bool masterDowned, bool petDowned, bool allowImmobilePetDowned, bool masterInMentalState, bool masterIsCaravanMember, bool exemptTravelMouseEggCaravanLeash, bool playerMasterExitsMapOnArrival)
+        public static bool ShouldBreakLeashLifecycle(bool masterDestroyed, bool petDestroyed, bool masterSpawned, bool petSpawned, bool masterAndPetOnSameMap, bool masterDead, bool petDead, bool masterDowned, bool petDowned, bool allowImmobilePetDowned, bool masterInMentalState, bool masterIsCaravanMember, bool exemptTravelMouseEggCaravanLeash, bool playerMasterExitsMapOnArrival, bool preservePlayerCaravanLeash = false)
         {
             if (masterDestroyed || petDestroyed)
             {
@@ -382,7 +383,7 @@ namespace LeadYourPet
                 return true;
             }
 
-            if (playerMasterExitsMapOnArrival)
+            if (playerMasterExitsMapOnArrival && !preservePlayerCaravanLeash)
             {
                 return true;
             }

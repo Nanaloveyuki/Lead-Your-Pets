@@ -43,6 +43,22 @@ namespace LeadYourPet
             listing.Label($"{"LeadYourPet_Settings_MouseEggLeashStartDistance".Translate().Resolve()} {Settings.maxMouseEggPetLeashStartDistance}");
             Settings.maxMouseEggPetLeashStartDistance = Mathf.RoundToInt(listing.Slider(Settings.maxMouseEggPetLeashStartDistance, 1f, 30f));
 
+            listing.Label("LeadYourPet_Settings_LeashedPawnMapExitBehavior".Translate().Resolve());
+            if (listing.RadioButton("LeadYourPet_Settings_LeashedPawnMapExitBehavior_StayInPlace".Translate().Resolve(), Settings.leashedPawnMapExitBehavior == LeashedPawnMapExitBehavior.StayInPlace))
+            {
+                Settings.leashedPawnMapExitBehavior = LeashedPawnMapExitBehavior.StayInPlace;
+            }
+
+            if (listing.RadioButton("LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap".Translate().Resolve(), Settings.leashedPawnMapExitBehavior == LeashedPawnMapExitBehavior.LeaveMap))
+            {
+                Settings.leashedPawnMapExitBehavior = LeashedPawnMapExitBehavior.LeaveMap;
+            }
+
+            if (listing.RadioButton("LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear".Translate().Resolve(), Settings.leashedPawnMapExitBehavior == LeashedPawnMapExitBehavior.Disappear))
+            {
+                Settings.leashedPawnMapExitBehavior = LeashedPawnMapExitBehavior.Disappear;
+            }
+
             listing.End();
             Settings.Write();
         }

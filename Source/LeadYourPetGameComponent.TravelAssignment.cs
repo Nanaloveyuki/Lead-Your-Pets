@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using RimWorld.Planet;
 using Verse;
 using Verse.AI.Group;
 
@@ -8,6 +9,146 @@ namespace LeadYourPet
 {
     public partial class LeadYourPetGameComponent
     {
+        public void AddPlayerLeashedPetsToFormingCaravan(Lord lord)
+        {
+            if (lord == null || !(lord.LordJob is LordJob_FormAndSendCaravan) || lord.ownedPawns == null)
+            {
+                return;
+            }
+
+            LordJob_FormAndSendCaravan caravanJob = (LordJob_FormAndSendCaravan)lord.LordJob;
+            if (caravanJob.downedPawns == null)
+            {
+                caravanJob.downedPawns = new List<Pawn>();
+            }
+
+            List<Pawn> masters = new List<Pawn>(lord.ownedPawns);
+            List<Pawn> pets = new List<Pawn>();
+            for (int i = 0; i < masters.Count; i++)
+            {
+                Pawn master = masters[i];
+                if (!LeadYourPetUtility.IsPlayerCaravanMaster(master))
+                {
+                    continue;
+                }
+
+                List<LeashLink> masterLinks = GetLinksForMaster(master);
+                for (int j = 0; j < masterLinks.Count; j++)
+                {
+                    Pawn pet = masterLinks[j]?.Pet;
+                    if (!CanAddPlayerLeashedPawnToCaravan(master, pet)
+                        || lord.ownedPawns.Contains(pet)
+                        || caravanJob.downedPawns.Contains(pet)
+                        || pets.Contains(pet))
+                    {
+                        continue;
+                    }
+
+                    pets.Add(pet);
+                }
+            }
+
+            for (int i = 0; i < pets.Count; i++)
+            {
+                CaravanFormingUtility.LateJoinFormingCaravan(pets[i], lord);
+            }
+        }
+
+        public IEnumerable<Pawn> IncludePlayerLeashedPawnsInCaravan(IEnumerable<Pawn> pawns, Faction faction)
+        {
+            if (pawns == null || faction != Faction.OfPlayer)
+            {
+                return pawns;
+            }
+
+            List<Pawn> selectedPawns = pawns.ToList();
+            List<Pawn> masters = new List<Pawn>(selectedPawns);
+            for (int i = 0; i < masters.Count; i++)
+            {
+                Pawn master = masters[i];
+                if (!LeadYourPetUtility.IsPlayerCaravanMaster(master))
+                {
+                    continue;
+                }
+
+                List<LeashLink> masterLinks = GetLinksForMaster(master);
+                for (int j = 0; j < masterLinks.Count; j++)
+                {
+                    Pawn pet = masterLinks[j]?.Pet;
+                    if (CanAddPlayerLeashedPawnToCaravan(master, pet) && !selectedPawns.Contains(pet))
+                    {
+                        selectedPawns.Add(pet);
+                    }
+                }
+            }
+
+            return selectedPawns;
+        }
+
+        public Caravan AddPlayerLeashedPetsToJoinableCaravan(Pawn master)
+        {
+            if (master == null || !master.Spawned || !LeadYourPetUtility.IsPlayerCaravanMaster(master))
+            {
+                return null;
+            }
+
+            Caravan caravan = CaravanExitMapUtility.FindCaravanToJoinFor(master);
+            if (caravan == null)
+            {
+                return null;
+            }
+
+            List<LeashLink> masterLinks = new List<LeashLink>(GetLinksForMaster(master));
+            for (int i = 0; i < masterLinks.Count; i++)
+            {
+                Pawn pet = masterLinks[i]?.Pet;
+                if (!CanAddPlayerLeashedPawnToCaravan(master, pet) || caravan.ContainsPawn(pet))
+                {
+                    continue;
+                }
+
+                Lord petLord = pet.GetLord();
+                if (petLord != null)
+                {
+                    petLord.Notify_PawnLost(pet, PawnLostCondition.ForcedToJoinOtherLord);
+                }
+
+                caravan.AddPawn(pet, true);
+            }
+
+            return caravan;
+        }
+
+        public void EndLeashesForCaravan(Caravan caravan)
+        {
+            if (caravan == null)
+            {
+                return;
+            }
+
+            List<LeashLink> snapshot = new List<LeashLink>(links);
+            for (int i = 0; i < snapshot.Count; i++)
+            {
+                LeashLink link = snapshot[i];
+                if (link != null && (caravan.ContainsPawn(link.Master) || caravan.ContainsPawn(link.Pet)))
+                {
+                    EndLink(link, false);
+                }
+            }
+        }
+
+        private bool CanAddPlayerLeashedPawnToCaravan(Pawn master, Pawn pet)
+        {
+            return master != null
+                && pet != null
+                && master != pet
+                && !pet.DestroyedOrNull()
+                && !pet.Dead
+                && pet.CarriedBy != master
+                && master.MapHeld != null
+                && pet.MapHeld == master.MapHeld;
+        }
+
         public void TryAssignTravelMouseEggs(Lord lord)
         {
             if (lord == null || lord.Map == null || lord.faction == null || lord.faction.HostileTo(Faction.OfPlayer))

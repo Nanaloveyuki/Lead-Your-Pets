@@ -65,4 +65,9 @@
   <LeadYourPet_Message_EndedMotherLeash>{0} 不再带着婴儿 {1}</LeadYourPet_Message_EndedMotherLeash>
   <LeadYourPet_Reason_MouseEggTooFarToLeash>鼠蛋超出可以开始牵引的最大距离</LeadYourPet_Reason_MouseEggTooFarToLeash>
   <LeadYourPet_Settings_MouseEggLeashStartDistance>鼠蛋开始牵引最大距离：</LeadYourPet_Settings_MouseEggLeashStartDistance>
+  <LeadYourPet_Settings_LeashedPawnMapExitBehavior>牵引者离开地图时：</LeadYourPet_Settings_LeashedPawnMapExitBehavior>
+  <LeadYourPet_Settings_LeashedPawnMapExitBehavior_StayInPlace>留在原地</LeadYourPet_Settings_LeashedPawnMapExitBehavior_StayInPlace>
+  <LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap>可以离开时离开地图</LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap>
+  <LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear>直接消失</LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear>
+  <LeadYourPet_Reason_NotHumanlikeJuvenile>不是14岁以下的智人种幼崽</LeadYourPet_Reason_NotHumanlikeJuvenile>
 </LanguageData>

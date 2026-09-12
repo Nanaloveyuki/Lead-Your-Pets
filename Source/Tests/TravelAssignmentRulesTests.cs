@@ -41,6 +41,30 @@ namespace LeadYourPet.Tests
         }
 
         [Fact]
+        public void TreatsAnyHumanlikePawnUnderFourteenAsMouseEggCompatible()
+        {
+            Assert.True(LeadYourPetRules.ShouldTreatAsMouseEgg(
+                isRatkinHumanlike: false,
+                isBaby: false,
+                isChild: false,
+                hasMeaningfulState: false,
+                isTravelMouseEgg: false,
+                isHumanlikeJuvenile: true));
+        }
+
+        [Fact]
+        public void TreatsHumanlikeJuvenileAsProtectedWhenLeashed()
+        {
+            Assert.True(LeadYourPetRules.ShouldTreatAsProtectedLeashedMouseEgg(
+                isMouseEgg: true,
+                isBaby: false,
+                isChild: false,
+                hasProtectedLink: true,
+                hasProtectedState: false,
+                isHumanlikeJuvenile: true));
+        }
+
+        [Fact]
         public void DropsCarriedTravelMouseEggAfterRegistrationWhenCarrierIsSpawned()
         {
             Assert.True(LeadYourPetRules.ShouldDropCarriedTravelMouseEggAfterRegistration(

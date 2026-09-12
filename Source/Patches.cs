@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -47,7 +48,79 @@ namespace LeadYourPet
     {
         public static void Postfix(Lord __result)
         {
-            LeadYourPetUtility.Component?.TryAssignTravelMouseEggs(__result);
+            LeadYourPetGameComponent component = LeadYourPetUtility.Component;
+            component?.TryAssignTravelMouseEggs(__result);
+            component?.AddPlayerLeashedPetsToFormingCaravan(__result);
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn), nameof(Pawn.ExitMap), typeof(bool), typeof(Rot4))]
+    public static class Patch_Pawn_ExitMap
+    {
+        public static void Prefix(Pawn __instance, bool allowedToJoinOrCreateCaravan, Rot4 exitDir)
+        {
+            LeadYourPetGameComponent component = LeadYourPetUtility.Component;
+            if (component == null || __instance == null || !__instance.Spawned)
+            {
+                return;
+            }
+
+            if (allowedToJoinOrCreateCaravan
+                && LeadYourPetUtility.IsPlayerCaravanMaster(__instance)
+                && CaravanExitMapUtility.CanExitMapAndJoinOrCreateCaravanNow(__instance))
+            {
+                return;
+            }
+
+            component.HandleMasterExitMap(__instance, exitDir);
+        }
+    }
+
+    [HarmonyPatch]
+    public static class Patch_CaravanExitMapUtility_ExitMapAndCreateCaravan
+    {
+        static MethodBase TargetMethod()
+        {
+            return AccessTools.Method(
+                typeof(CaravanExitMapUtility),
+                nameof(CaravanExitMapUtility.ExitMapAndCreateCaravan),
+                new[] { typeof(IEnumerable<Pawn>), typeof(Faction), typeof(PlanetTile), typeof(PlanetTile), typeof(PlanetTile), typeof(bool) });
+        }
+
+        public static void Prefix(ref IEnumerable<Pawn> pawns, Faction faction)
+        {
+            LeadYourPetGameComponent component = LeadYourPetUtility.Component;
+            if (component != null)
+            {
+                pawns = component.IncludePlayerLeashedPawnsInCaravan(pawns, faction);
+            }
+        }
+
+        public static void Postfix(Caravan __result)
+        {
+            LeadYourPetUtility.Component?.EndLeashesForCaravan(__result);
+        }
+    }
+
+    [HarmonyPatch]
+    public static class Patch_CaravanExitMapUtility_ExitMapAndJoinOrCreateCaravan
+    {
+        static MethodBase TargetMethod()
+        {
+            return AccessTools.Method(
+                typeof(CaravanExitMapUtility),
+                nameof(CaravanExitMapUtility.ExitMapAndJoinOrCreateCaravan),
+                new[] { typeof(Pawn), typeof(Rot4) });
+        }
+
+        public static void Prefix(Pawn pawn, ref Caravan __state)
+        {
+            __state = LeadYourPetUtility.Component?.AddPlayerLeashedPetsToJoinableCaravan(pawn);
+        }
+
+        public static void Postfix(Caravan __state)
+        {
+            LeadYourPetUtility.Component?.EndLeashesForCaravan(__state);
         }
     }
 

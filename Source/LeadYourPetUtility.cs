@@ -15,6 +15,7 @@ namespace LeadYourPet
     public static class LeadYourPetUtility
     {
         public const string HarmonyId = "lezhizhong.leadyourpet";
+        public const float HumanlikeJuvenileMaxAge = 14f;
         private const string MouseDisasterPackageId = "lezhizhong.mouse.disaster.famine";
         private const string MouseDisasterChildPawnKindDefName = "MouseDisaster_BeggarRatkinChild";
         private const string MouseDisasterTraderPawnKindDefName = "MouseDisaster_TraderRatkinAdult";
@@ -81,6 +82,11 @@ namespace LeadYourPet
         public static float FollowThreshold => Mathf.Max(2f, MaxLeashLength - 2f);
         public static int MaxMouseEggPetLeashStartDistance => LeadYourPetMod.Settings == null ? 10 : Mathf.Max(1, LeadYourPetMod.Settings.maxMouseEggPetLeashStartDistance);
 
+        public static bool IsPlayerCaravanMaster(Pawn pawn)
+        {
+            return pawn != null && (pawn.IsColonist || pawn.IsColonySubhumanPlayerControlled);
+        }
+
         public static bool CanPlayerCommand(Pawn pawn)
         {
             return pawn != null
@@ -117,6 +123,14 @@ namespace LeadYourPet
             return isRatkin;
         }
 
+        public static bool IsHumanlikeJuvenile(Pawn pawn)
+        {
+            return pawn != null
+                && pawn.RaceProps.Humanlike
+                && pawn.ageTracker != null
+                && pawn.ageTracker.AgeBiologicalYearsFloat < HumanlikeJuvenileMaxAge;
+        }
+
         public static bool IsMouseEgg(Pawn pawn)
         {
             if (pawn == null)
@@ -129,7 +143,8 @@ namespace LeadYourPet
                 pawn.DevelopmentalStage.Baby(),
                 pawn.DevelopmentalStage.Child(),
                 HasMeaningfulMouseEggState(pawn),
-                IsMouseDisasterTravelPawn(pawn));
+                IsMouseDisasterTravelPawn(pawn),
+                IsHumanlikeJuvenile(pawn));
         }
 
         public static bool IsColonistMouseEgg(Pawn pawn)
@@ -147,7 +162,8 @@ namespace LeadYourPet
             bool isMouseEgg = IsMouseEgg(pawn);
             bool isBaby = pawn.DevelopmentalStage.Baby();
             bool isChild = pawn.DevelopmentalStage.Child();
-            if (!isMouseEgg || (!isBaby && !isChild))
+            bool isHumanlikeJuvenile = IsHumanlikeJuvenile(pawn);
+            if (!isMouseEgg || (!isBaby && !isChild && !isHumanlikeJuvenile))
             {
                 return false;
             }
@@ -159,7 +175,8 @@ namespace LeadYourPet
                 isBaby,
                 isChild,
                 link != null && (link.Kind == LeashLinkKind.MouseEggPet || link.Kind == LeashLinkKind.RatkinMotherBaby),
-                state != null && (state.IsPet || state.CurrentMaster != null));
+                state != null && (state.IsPet || state.CurrentMaster != null),
+                isHumanlikeJuvenile);
         }
 
         public static bool HasMeaningfulMouseEggState(Pawn pawn)
@@ -176,21 +193,15 @@ namespace LeadYourPet
         public static bool CanBePetMouseEgg(Pawn pawn, out string reasonKey)
         {
             reasonKey = null;
-            if (!IsRatkinHumanlike(pawn))
+            if (!IsHumanlikeJuvenile(pawn))
             {
-                reasonKey = "LeadYourPet_Reason_NotRatkinMouseEgg";
+                reasonKey = "LeadYourPet_Reason_NotHumanlikeJuvenile";
                 return false;
             }
 
             if (pawn.Dead)
             {
                 reasonKey = "LeadYourPet_Reason_Dead";
-                return false;
-            }
-
-            if (!pawn.DevelopmentalStage.Baby() && !pawn.DevelopmentalStage.Child())
-            {
-                reasonKey = "LeadYourPet_Reason_NotBaby";
                 return false;
             }
 
@@ -571,7 +582,9 @@ namespace LeadYourPet
                 return mouseDisasterPawn;
             }
 
-            float randomAge = kind.defName == MouseDisasterChildPawnKindDefName ? Rand.Range(1f, 6.9f) : Rand.Range(0f, 20f);
+            float randomAge = kind.defName == MouseDisasterChildPawnKindDefName
+                ? Rand.Range(1f, 6.9f)
+                : Rand.Range(0f, HumanlikeJuvenileMaxAge - 0.01f);
             // 这里不能把非鼠族来访派系直接传给 PawnGenerator，否则会被派系的人种/Kind 规则污染，生成成普通智人。
             PawnGenerationRequest request = new PawnGenerationRequest(kind, null, PawnGenerationContext.NonPlayer, map.Tile, forceGenerateNewPawn: true, allowDead: false, allowDowned: true, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, fixedBiologicalAge: randomAge, developmentalStages: DevelopmentalStage.Baby | DevelopmentalStage.Child, forceNoBackstory: true);
             Pawn pawn = PawnGenerator.GeneratePawn(request);
