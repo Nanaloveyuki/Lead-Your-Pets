@@ -100,15 +100,69 @@ namespace LeadYourPet
     [HarmonyPatch(typeof(Pawn_CarryTracker), nameof(Pawn_CarryTracker.TryStartCarry), typeof(Thing))]
     public static class Patch_PawnCarryTracker_TryStartCarry
     {
-        public static bool Prefix(Pawn_CarryTracker __instance, Thing item, ref bool __result)
+        internal static bool TryAllowPrisonerTransfer(Pawn_CarryTracker tracker, Thing item, ref bool state)
         {
-            if (item is Pawn pawn && LeadYourPetUtility.ShouldBlockCarryOfProtectedMouseEgg(__instance?.pawn, pawn))
+            if (item is Pawn pawn && LeadYourPetUtility.ShouldAllowProtectedMouseEggPrisonerTransfer(tracker?.pawn, pawn))
+            {
+                state = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        internal static void CompletePrisonerTransfer(Thing item, bool result, bool state)
+        {
+            if (state && result && item is Pawn pawn)
+            {
+                LeadYourPetUtility.Component?.EndLeashForPet(pawn, false);
+            }
+        }
+
+        public static bool Prefix(Pawn_CarryTracker __instance, Thing item, ref bool __result, ref bool __state)
+        {
+            if (TryAllowPrisonerTransfer(__instance, item, ref __state))
+            {
+                return true;
+            }
+
+            if (item is Pawn pawnToBlock && LeadYourPetUtility.ShouldBlockCarryOfProtectedMouseEgg(__instance?.pawn, pawnToBlock))
             {
                 __result = false;
                 return false;
             }
 
             return true;
+        }
+
+        public static void Postfix(Thing item, bool __result, bool __state)
+        {
+            CompletePrisonerTransfer(item, __result, __state);
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_CarryTracker), nameof(Pawn_CarryTracker.TryStartCarry), typeof(Thing), typeof(int), typeof(bool))]
+    public static class Patch_PawnCarryTracker_TryStartCarryStack
+    {
+        public static bool Prefix(Pawn_CarryTracker __instance, Thing item, ref int __result, ref bool __state)
+        {
+            if (Patch_PawnCarryTracker_TryStartCarry.TryAllowPrisonerTransfer(__instance, item, ref __state))
+            {
+                return true;
+            }
+
+            if (item is Pawn pawn && LeadYourPetUtility.ShouldBlockCarryOfProtectedMouseEgg(__instance?.pawn, pawn))
+            {
+                __result = 0;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static void Postfix(Thing item, int __result, bool __state)
+        {
+            Patch_PawnCarryTracker_TryStartCarry.CompletePrisonerTransfer(item, __result > 0, __state);
         }
     }
 

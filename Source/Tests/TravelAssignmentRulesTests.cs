@@ -12,6 +12,23 @@ namespace LeadYourPet.Tests
                 allowColonistCarry: true));
         }
 
+        [Theory]
+        [InlineData(true, true, true, true)]
+        [InlineData(true, false, true, false)]
+        [InlineData(true, true, false, false)]
+        [InlineData(false, true, true, false)]
+        public void AllowsOnlyMatchingPrisonerTransferToCarryProtectedMouseEgg(
+            bool isProtectedLeashedMouseEgg,
+            bool jobMakesTargetPrisoner,
+            bool jobTargetMatchesPawn,
+            bool expected)
+        {
+            Assert.Equal(expected, LeadYourPetRules.ShouldAllowProtectedPawnPrisonerTransfer(
+                isProtectedLeashedMouseEgg,
+                jobMakesTargetPrisoner,
+                jobTargetMatchesPawn));
+        }
+
         [Fact]
         public void TreatsLeashedMouseEggChildAsProtected()
         {

@@ -98,6 +98,16 @@ namespace LeadYourPet
             return isProtectedLeashedMouseEgg;
         }
 
+        public static bool ShouldAllowProtectedPawnPrisonerTransfer(
+            bool isProtectedLeashedMouseEgg,
+            bool jobMakesTargetPrisoner,
+            bool jobTargetMatchesPawn)
+        {
+            return isProtectedLeashedMouseEgg
+                && jobMakesTargetPrisoner
+                && jobTargetMatchesPawn;
+        }
+
         public static bool ShouldTreatAsProtectedLeashedMouseEgg(bool isMouseEgg, bool isBaby, bool isChild, bool hasProtectedLink, bool hasProtectedState)
         {
             return isMouseEgg && (isBaby || isChild) && (hasProtectedLink || hasProtectedState);

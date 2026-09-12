@@ -321,6 +321,15 @@ namespace LeadYourPet
                 allowColonistCarry: false);
         }
 
+        public static bool ShouldAllowProtectedMouseEggPrisonerTransfer(Pawn carrier, Pawn target)
+        {
+            Job job = carrier?.CurJob;
+            return LeadYourPetRules.ShouldAllowProtectedPawnPrisonerTransfer(
+                IsProtectedLeashedMouseEgg(target),
+                jobMakesTargetPrisoner: job?.def?.makeTargetPrisoner == true,
+                jobTargetMatchesPawn: job?.targetA.Thing == target);
+        }
+
         public static bool ShouldBlockExternalToddlerPickup(Pawn target, string jobDefName)
         {
             return target != null && LeadYourPetRules.ShouldBlockExternalToddlerPickup(
