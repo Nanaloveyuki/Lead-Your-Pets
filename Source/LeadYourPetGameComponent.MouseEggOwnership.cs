@@ -68,6 +68,8 @@ namespace LeadYourPet
             if (pawn.guest != null)
             {
                 pawn.guest.SetGuestStatus(Faction.OfPlayer, GuestStatus.Prisoner);
+                pawn.guest.resistance = LeadYourPetRules.ResolveTravelMouseEggPrisonerResistance();
+                pawn.guest.will = LeadYourPetRules.ResolveTravelMouseEggPrisonerWill();
             }
 
             EndLeashForPet(pawn, false);

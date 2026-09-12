@@ -254,11 +254,24 @@ namespace LeadYourPet.Tests
         }
 
         [Fact]
-        public void AssignsGeneratedTravelMouseEggToCaravanFaction()
+        public void ClearsFactionFromGeneratedTravelMouseEgg()
         {
-            Assert.True(LeadYourPetRules.ShouldAssignGeneratedTravelMouseEggFaction(
+            Assert.True(LeadYourPetRules.ShouldClearGeneratedTravelMouseEggFaction(
                 hasGeneratedPawn: true,
                 hasFaction: true));
+            Assert.False(LeadYourPetRules.ShouldClearGeneratedTravelMouseEggFaction(
+                hasGeneratedPawn: true,
+                hasFaction: false));
+            Assert.False(LeadYourPetRules.ShouldClearGeneratedTravelMouseEggFaction(
+                hasGeneratedPawn: false,
+                hasFaction: true));
+        }
+
+        [Fact]
+        public void BoughtTravelMouseEggPrisonerStartsWithNoResistanceAndLowWill()
+        {
+            Assert.Equal(0f, LeadYourPetRules.ResolveTravelMouseEggPrisonerResistance());
+            Assert.InRange(LeadYourPetRules.ResolveTravelMouseEggPrisonerWill(), 0f, 0.199999f);
         }
 
         [Fact]

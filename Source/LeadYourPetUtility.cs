@@ -568,7 +568,13 @@ namespace LeadYourPet
             return false;
         }
 
-        public static Pawn GenerateMouseEggPawn(Faction faction, Map map)
+        // Keep the legacy overload for callers compiled against earlier Continued builds.
+        public static Pawn GenerateMouseEggPawn(Faction ignoredFaction, Map map)
+        {
+            return GenerateMouseEggPawn(map);
+        }
+
+        public static Pawn GenerateMouseEggPawn(Map map)
         {
             PawnKindDef kind = ResolveTravelMouseEggPawnKind();
             if (kind == null)
@@ -576,9 +582,11 @@ namespace LeadYourPet
                 return null;
             }
 
-            Pawn mouseDisasterPawn = TryGenerateMouseDisasterTravelPawn(kind, faction);
+            // Caravan membership is tracked by the Lord and leash state; the generated egg itself is factionless.
+            Pawn mouseDisasterPawn = TryGenerateMouseDisasterTravelPawn(kind);
             if (mouseDisasterPawn != null)
             {
+                ClearGeneratedTravelMouseEggFaction(mouseDisasterPawn);
                 return mouseDisasterPawn;
             }
 
@@ -589,17 +597,22 @@ namespace LeadYourPet
             PawnGenerationRequest request = new PawnGenerationRequest(kind, null, PawnGenerationContext.NonPlayer, map.Tile, forceGenerateNewPawn: true, allowDead: false, allowDowned: true, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, fixedBiologicalAge: randomAge, developmentalStages: DevelopmentalStage.Baby | DevelopmentalStage.Child, forceNoBackstory: true);
             Pawn pawn = PawnGenerator.GeneratePawn(request);
             PawnComponentsUtility.AddAndRemoveDynamicComponents(pawn, true);
-            if (LeadYourPetRules.ShouldAssignGeneratedTravelMouseEggFaction(
-                hasGeneratedPawn: pawn != null,
-                hasFaction: faction != null))
-            {
-                pawn.SetFaction(faction);
-            }
+            ClearGeneratedTravelMouseEggFaction(pawn);
 
             return pawn;
         }
 
-        private static Pawn TryGenerateMouseDisasterTravelPawn(PawnKindDef kind, Faction faction)
+        private static void ClearGeneratedTravelMouseEggFaction(Pawn pawn)
+        {
+            if (LeadYourPetRules.ShouldClearGeneratedTravelMouseEggFaction(
+                hasGeneratedPawn: pawn != null,
+                hasFaction: pawn?.Faction != null))
+            {
+                pawn.SetFaction(null);
+            }
+        }
+
+        private static Pawn TryGenerateMouseDisasterTravelPawn(PawnKindDef kind)
         {
             if (!ShouldUseMouseDisasterTravelPawn() || MouseDisasterGenerateFactionRatkinPawnMethod == null)
             {
@@ -608,7 +621,7 @@ namespace LeadYourPet
 
             try
             {
-                Pawn pawn = OptionalModApi.Invoke(MouseDisasterGenerateFactionRatkinPawnMethod, kind, faction, DevelopmentalStage.Baby, 0.35f) as Pawn;
+                Pawn pawn = OptionalModApi.Invoke(MouseDisasterGenerateFactionRatkinPawnMethod, kind, null, DevelopmentalStage.Baby, 0.35f) as Pawn;
                 if (pawn == null)
                 {
                     return null;

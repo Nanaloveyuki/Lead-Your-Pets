@@ -208,7 +208,7 @@ namespace LeadYourPet
                     continue;
                 }
 
-                Pawn egg = LeadYourPetUtility.GenerateMouseEggPawn(lord.faction, lord.Map);
+                Pawn egg = LeadYourPetUtility.GenerateMouseEggPawn(lord.Map);
                 if (egg == null)
                 {
                     continue;

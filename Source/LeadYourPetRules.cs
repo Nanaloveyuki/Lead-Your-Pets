@@ -137,9 +137,19 @@ namespace LeadYourPet
                 && carrierIsCarryingPawn;
         }
 
-        public static bool ShouldAssignGeneratedTravelMouseEggFaction(bool hasGeneratedPawn, bool hasFaction)
+        public static bool ShouldClearGeneratedTravelMouseEggFaction(bool hasGeneratedPawn, bool hasFaction)
         {
             return hasGeneratedPawn && hasFaction;
+        }
+
+        public static float ResolveTravelMouseEggPrisonerResistance()
+        {
+            return 0f;
+        }
+
+        public static float ResolveTravelMouseEggPrisonerWill()
+        {
+            return 0.1f;
         }
 
         public static int ResolveOrdinaryTravelMouseEggTargetCount(bool traderLord, bool hasEligibleAdults)
