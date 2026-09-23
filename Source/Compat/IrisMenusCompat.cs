@@ -1,0 +1,314 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Verse;
+
+namespace LeadYourPet
+{
+    // No compile reference to IrisMenus. Registration runs only after the active 1.6 mod is found.
+    internal static class IrisMenusCompat
+    {
+        internal const string PackageId = "Nanaloveyuki.IrisMenus";
+
+        static bool registered;
+        static MethodInfo registerPage;
+        static MethodInfo registerSearch;
+        static Type searchResult;
+        static MethodInfo anchor;
+        static MethodInfo section;
+        static MethodInfo checkbox;
+        static MethodInfo number;
+        static MethodInfo select;
+        static ConstructorInfo searchEntry;
+
+        internal static void TryRegister(LeadYourPetMod owner)
+        {
+            if (registered || owner == null)
+            {
+                return;
+            }
+
+            ModMetaData meta = ModLister.GetActiveModWithIdentifier(PackageId, false);
+            if (meta == null)
+            {
+                Log.Message("[LeadYourPet] IrisMenus is not active. Menu pages were not registered.");
+                return;
+            }
+
+            bool supported = meta.SupportedVersionsReadOnly != null &&
+                meta.SupportedVersionsReadOnly.Any(item => item != null && item.Major == 1 && item.Minor == 6);
+            if (!supported)
+            {
+                Log.Warning("[LeadYourPet] IrisMenus does not list RimWorld 1.6. Menu pages were not registered.");
+                return;
+            }
+
+            try
+            {
+                if (!Bind())
+                {
+                    Log.Warning("[LeadYourPet] IrisMenus public menu API was not found. Menu pages were not registered.");
+                    return;
+                }
+
+                new IrisMenusPages().Register(owner);
+                registered = true;
+                Log.Message("[LeadYourPet] IrisMenus 1.6 pages registered.");
+            }
+            catch (Exception exception)
+            {
+                Log.Error("[LeadYourPet] IrisMenus registration failed. The mod will keep loading without menu pages.\n" +
+                    exception);
+            }
+        }
+
+        internal static void ResetForTests()
+        {
+            registered = false;
+        }
+
+        static Type TypeByName(string name)
+        {
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Type type = assembly.GetType(name, false);
+                if (type != null)
+                {
+                    return type;
+                }
+            }
+
+            return null;
+        }
+
+        static bool Bind()
+        {
+            Type registry = TypeByName("IrisMenus.MenuRegistry");
+            Type controls = TypeByName("IrisMenus.MenuControls");
+            Type entry = TypeByName("IrisMenus.MenuSearchEntry");
+            if (registry == null || controls == null || entry == null)
+            {
+                return false;
+            }
+
+            registerPage = OptionalModApi.Resolve(registry, "RegisterSubItemListing", typeof(Mod), typeof(string), typeof(Func<string>), typeof(Action<Listing_Standard>));
+            registerSearch = registry.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .FirstOrDefault(method => method.Name == "RegisterSearchProvider" && method.GetParameters().Length >= 3);
+            Type provider = registerSearch?.GetParameters()[2].ParameterType;
+            searchResult = provider != null && provider.IsGenericType ? provider.GetGenericArguments()[0].GetGenericArguments()[0] : null;
+
+            anchor = OptionalModApi.Resolve(controls, "Anchor", typeof(Listing_Standard), typeof(string));
+            section = OptionalModApi.Resolve(controls, "Section", typeof(Listing_Standard), typeof(string));
+            checkbox = OptionalModApi.Resolve(controls, "Checkbox", typeof(Listing_Standard), typeof(string), typeof(bool).MakeByRefType());
+            number = controls.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .FirstOrDefault(method =>
+                {
+                    if (method.Name != "Number")
+                    {
+                        return false;
+                    }
+
+                    ParameterInfo[] parameters = method.GetParameters();
+                    return parameters.Length >= 4 && parameters[2].ParameterType == typeof(int).MakeByRefType();
+                });
+            select = controls.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .FirstOrDefault(method => method.Name == "Select" && method.IsGenericMethodDefinition);
+            searchEntry = entry.GetConstructor(new[] { typeof(string), typeof(Func<string>), typeof(Func<string>), typeof(Func<string>) });
+            return registerPage != null && registerSearch != null && searchResult != null && anchor != null &&
+                section != null && checkbox != null && number != null && select != null && searchEntry != null;
+        }
+
+        internal static void RegisterPage(Mod owner, string pageId, string titleKey, Action<Listing_Standard> draw, Func<IEnumerable<object>> search)
+        {
+            OptionalModApi.Invoke(registerPage, owner, pageId, (Func<string>)(() => titleKey.Translate()), draw);
+            Type sequence = typeof(IEnumerable<>).MakeGenericType(searchResult);
+            Delegate callback = Delegate.CreateDelegate(
+                typeof(Func<>).MakeGenericType(sequence),
+                new SearchAdapter(search, sequence),
+                nameof(SearchAdapter.Entries));
+            OptionalModApi.Invoke(registerSearch, owner, pageId, callback);
+        }
+
+        sealed class SearchAdapter
+        {
+            readonly Func<IEnumerable<object>> search;
+            readonly MethodInfo cast;
+
+            internal SearchAdapter(Func<IEnumerable<object>> search, Type sequence)
+            {
+                this.search = search;
+                cast = typeof(Enumerable).GetMethod(nameof(Enumerable.Cast)).MakeGenericMethod(sequence.GetGenericArguments()[0]);
+            }
+
+            internal object Entries()
+            {
+                return cast.Invoke(null, new object[] { search() });
+            }
+        }
+
+        internal static void Section(Listing_Standard list, string title)
+        {
+            OptionalModApi.Invoke(section, list, title);
+        }
+
+        internal static void Anchor(Listing_Standard list, string id, float height = 30f)
+        {
+            OptionalModApi.Invoke(anchor, list, id, height);
+        }
+
+        internal static void Checkbox(Listing_Standard list, string label, ref bool value, string tooltip)
+        {
+            object[] arguments = { list, label, value, tooltip };
+            checkbox.Invoke(null, arguments);
+            value = (bool)arguments[2];
+        }
+
+        internal static void Number(Listing_Standard list, string label, ref int value, ref string buffer, int min, int max)
+        {
+            object[] arguments = { list, label, value, buffer, min, max };
+            number.Invoke(null, arguments);
+            value = (int)arguments[2];
+            buffer = (string)arguments[3];
+        }
+
+        internal static void SelectExit(Listing_Standard list, string label, ref LeashedPawnMapExitBehavior value)
+        {
+            MethodInfo closed = select.MakeGenericMethod(typeof(LeashedPawnMapExitBehavior));
+            LeashedPawnMapExitBehavior[] choices =
+            {
+                LeashedPawnMapExitBehavior.StayInPlace,
+                LeashedPawnMapExitBehavior.LeaveMap,
+                LeashedPawnMapExitBehavior.Disappear
+            };
+            LeashedPawnMapExitBehavior selected = value;
+            Action<LeashedPawnMapExitBehavior> chosen = next => selected = next;
+            closed.Invoke(null, new object[] { list, label, value, choices, (Func<LeashedPawnMapExitBehavior, string>)ExitLabel, chosen });
+            value = selected;
+        }
+
+        internal static object Entry(string id, string titleKey, string keywords, string contextKey = null)
+        {
+            return searchEntry.Invoke(new object[]
+            {
+                id,
+                (Func<string>)(() => titleKey.Translate()),
+                keywords == null ? null : (Func<string>)(() => keywords),
+                contextKey == null ? null : (Func<string>)(() => contextKey.Translate())
+            });
+        }
+
+        static string ExitLabel(LeashedPawnMapExitBehavior value)
+        {
+            switch (value)
+            {
+                case LeashedPawnMapExitBehavior.LeaveMap:
+                    return "LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap".Translate();
+                case LeashedPawnMapExitBehavior.Disappear:
+                    return "LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear".Translate();
+                default:
+                    return "LeadYourPet_Settings_LeashedPawnMapExitBehavior_StayInPlace".Translate();
+            }
+        }
+    }
+
+    internal sealed class IrisMenusPages
+    {
+        string lengthBuffer = string.Empty;
+        string distanceBuffer = string.Empty;
+        bool lengthVisible;
+
+        internal void Register(Mod owner)
+        {
+            IrisMenusCompat.RegisterPage(owner, "leash", "LeadYourPet_Menu_Leash", DrawLeash, SearchLeash);
+            IrisMenusCompat.RegisterPage(owner, "mouse-egg", "LeadYourPet_Menu_MouseEgg", DrawMouseEgg, SearchMouseEgg);
+            IrisMenusCompat.RegisterPage(owner, "map-exit", "LeadYourPet_Menu_MapExit", DrawMapExit, SearchMapExit);
+        }
+
+        void DrawLeash(Listing_Standard list)
+        {
+            LeadYourPetSettings settings = LeadYourPetMod.Settings;
+            if (settings == null)
+            {
+                return;
+            }
+
+            lengthVisible = !settings.infiniteLeash;
+            IrisMenusCompat.Section(list, "LeadYourPet_Menu_Leash".Translate());
+            IrisMenusCompat.Anchor(list, "infinite");
+            IrisMenusCompat.Checkbox(list, "LeadYourPet_Settings_InfiniteLeash".Translate(), ref settings.infiniteLeash,
+                "LeadYourPet_Settings_InfiniteLeash_Tooltip".Translate());
+            IrisMenusCompat.Anchor(list, "text");
+            IrisMenusCompat.Checkbox(list, "LeadYourPet_Settings_ShowInteractionText".Translate(), ref settings.showInteractionText,
+                "LeadYourPet_Settings_ShowInteractionText_Tooltip".Translate());
+            if (!lengthVisible)
+            {
+                return;
+            }
+
+            IrisMenusCompat.Anchor(list, "length", 34f);
+            if (lengthBuffer.Length == 0)
+            {
+                lengthBuffer = settings.maxLeashLength.ToString();
+            }
+
+            IrisMenusCompat.Number(list, "LeadYourPet_Settings_MaxLeashLength".Translate(), ref settings.maxLeashLength,
+                ref lengthBuffer, 3, 30);
+        }
+
+        void DrawMouseEgg(Listing_Standard list)
+        {
+            LeadYourPetSettings settings = LeadYourPetMod.Settings;
+            if (settings == null)
+            {
+                return;
+            }
+
+            IrisMenusCompat.Section(list, "LeadYourPet_Menu_MouseEgg".Translate());
+            IrisMenusCompat.Anchor(list, "distance", 34f);
+            if (distanceBuffer.Length == 0)
+            {
+                distanceBuffer = settings.maxMouseEggPetLeashStartDistance.ToString();
+            }
+
+            IrisMenusCompat.Number(list, "LeadYourPet_Settings_MouseEggLeashStartDistance".Translate(),
+                ref settings.maxMouseEggPetLeashStartDistance, ref distanceBuffer, 1, 30);
+        }
+
+        void DrawMapExit(Listing_Standard list)
+        {
+            LeadYourPetSettings settings = LeadYourPetMod.Settings;
+            if (settings == null)
+            {
+                return;
+            }
+
+            IrisMenusCompat.Section(list, "LeadYourPet_Menu_MapExit".Translate());
+            IrisMenusCompat.Anchor(list, "exit");
+            IrisMenusCompat.SelectExit(list, "LeadYourPet_Settings_LeashedPawnMapExitBehavior".Translate(),
+                ref settings.leashedPawnMapExitBehavior);
+        }
+
+        IEnumerable<object> SearchLeash()
+        {
+            yield return IrisMenusCompat.Entry("infinite", "LeadYourPet_Settings_InfiniteLeash", "leash length infinite",
+                "LeadYourPet_Settings_InfiniteLeash_Tooltip");
+            yield return IrisMenusCompat.Entry("text", "LeadYourPet_Settings_ShowInteractionText", "mote text",
+                "LeadYourPet_Settings_ShowInteractionText_Tooltip");
+            if (lengthVisible)
+            {
+                yield return IrisMenusCompat.Entry("length", "LeadYourPet_Settings_MaxLeashLength", "max leash length");
+            }
+        }
+
+        IEnumerable<object> SearchMouseEgg()
+        {
+            yield return IrisMenusCompat.Entry("distance", "LeadYourPet_Settings_MouseEggLeashStartDistance", "mouse egg start distance");
+        }
+
+        IEnumerable<object> SearchMapExit()
+        {
+            yield return IrisMenusCompat.Entry("exit", "LeadYourPet_Settings_LeashedPawnMapExitBehavior", "map exit stay leave disappear");
+        }
+    }
+}

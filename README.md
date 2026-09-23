@@ -4,10 +4,11 @@
 
 ## 兼容范围
 
-- 保留原版玩法、Def、`LeadYourPet` 程序集与命名空间、存档类型、Scribe 字段及枚举值。
+- 保留原版玩法、Def、`LeadYourPet` 程序集与命名空间、存档类型、Scribe 字段及枚举值。源码按 Core、Leash、MouseEgg、Interaction、Patches、Compat 分目录，类型全名仍是 `LeadYourPet.*`。
 - 修复鼠灾原版 / Continued 的可选联动：包名检测、生成方法重载与可选参数、访客敌对入口。
 - 鼠灾 Continued 需安装同时更新的版本，才能主动识别本模组的新包名。
 - 新包名：`nanaloveyuki.leadyourpet.continued`。不包含原版创意工坊发布 ID。
+- IrisMenus（`Nanaloveyuki.IrisMenus`，1.6）可选。运行时检测到已启用且支持 1.6，并且公开菜单 API 存在时，用反射登记牵引、鼠蛋、离图三页，写入同一套设置。主程序集不引用 IrisMenus.dll。未安装、未启用、不是 1.6 或 API 对不上时不登记，原版设置窗口照常可用。不写入 `modDependencies`。
 
 ## 替换原版
 

@@ -10,6 +10,7 @@ namespace LeadYourPet
         public LeadYourPetMod(ModContentPack content) : base(content)
         {
             Settings = GetSettings<LeadYourPetSettings>();
+            IrisMenusCompat.TryRegister(this);
         }
 
         public override string SettingsCategory()

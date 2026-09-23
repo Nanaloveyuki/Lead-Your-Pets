@@ -70,4 +70,13 @@
   <LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap>可以离开时离开地图</LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap>
   <LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear>直接消失</LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear>
   <LeadYourPet_Reason_NotHumanlikeJuvenile>不是14岁以下的智人种幼崽</LeadYourPet_Reason_NotHumanlikeJuvenile>
+
+  <LeadYourPet_Menu_Leash>牵引</LeadYourPet_Menu_Leash>
+  <LeadYourPet_Menu_MouseEgg>鼠蛋</LeadYourPet_Menu_MouseEgg>
+  <LeadYourPet_Menu_MapExit>离图</LeadYourPet_Menu_MapExit>
+  <LeadYourPet_Settings_InfiniteLeash>拴绳无限长度</LeadYourPet_Settings_InfiniteLeash>
+  <LeadYourPet_Settings_InfiniteLeash_Tooltip>开启后忽略最大拴绳长度。</LeadYourPet_Settings_InfiniteLeash_Tooltip>
+  <LeadYourPet_Settings_ShowInteractionText>显示头顶浮字</LeadYourPet_Settings_ShowInteractionText>
+  <LeadYourPet_Settings_ShowInteractionText_Tooltip>关闭后不再显示互动时的头顶文字。</LeadYourPet_Settings_ShowInteractionText_Tooltip>
+  <LeadYourPet_Settings_MaxLeashLength>拴绳最高长度</LeadYourPet_Settings_MaxLeashLength>
 </LanguageData>

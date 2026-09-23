@@ -22,7 +22,7 @@ namespace LeadYourPet.Tests
             DirectoryInfo directory = new DirectoryInfo(Directory.GetCurrentDirectory());
             while (directory != null)
             {
-                string path = Path.Combine(directory.FullName, "Source", "FloatMenuOptionProvider_LeadYourPet.cs");
+                string path = Path.Combine(directory.FullName, "Source", "Patches", "FloatMenuOptionProvider_LeadYourPet.cs");
                 if (File.Exists(path))
                 {
                     return path;

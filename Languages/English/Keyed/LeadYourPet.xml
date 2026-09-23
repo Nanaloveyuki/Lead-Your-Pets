@@ -70,4 +70,13 @@
 
   <LeadYourPet_Message_StartedMotherLeash>{0} started leading baby {1}</LeadYourPet_Message_StartedMotherLeash>
   <LeadYourPet_Message_EndedMotherLeash>{0} stopped leading baby {1}</LeadYourPet_Message_EndedMotherLeash>
+
+  <LeadYourPet_Menu_Leash>Leash</LeadYourPet_Menu_Leash>
+  <LeadYourPet_Menu_MouseEgg>Mouse egg</LeadYourPet_Menu_MouseEgg>
+  <LeadYourPet_Menu_MapExit>Map exit</LeadYourPet_Menu_MapExit>
+  <LeadYourPet_Settings_InfiniteLeash>Unlimited leash length</LeadYourPet_Settings_InfiniteLeash>
+  <LeadYourPet_Settings_InfiniteLeash_Tooltip>Ignore the maximum leash length.</LeadYourPet_Settings_InfiniteLeash_Tooltip>
+  <LeadYourPet_Settings_ShowInteractionText>Show overhead text</LeadYourPet_Settings_ShowInteractionText>
+  <LeadYourPet_Settings_ShowInteractionText_Tooltip>Hide the floating text shown during interactions.</LeadYourPet_Settings_ShowInteractionText_Tooltip>
+  <LeadYourPet_Settings_MaxLeashLength>Maximum leash length</LeadYourPet_Settings_MaxLeashLength>
 </LanguageData>

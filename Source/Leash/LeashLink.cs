@@ -1,4 +1,4 @@
-﻿using Verse;
+using Verse;
 using System.Collections.Generic;
 
 namespace LeadYourPet

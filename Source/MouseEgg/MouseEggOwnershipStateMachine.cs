@@ -1,4 +1,4 @@
-﻿namespace LeadYourPet
+namespace LeadYourPet
 {
     public static class MouseEggOwnershipStateMachine
     {
