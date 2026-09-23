@@ -7,8 +7,9 @@
 - 保留原版玩法、Def、`LeadYourPet` 程序集与命名空间、存档类型、Scribe 字段及枚举值。源码按 Core、Leash、MouseEgg、Interaction、Patches、Compat 分目录，类型全名仍是 `LeadYourPet.*`。
 - 修复鼠灾原版 / Continued 的可选联动：包名检测、生成方法重载与可选参数、访客敌对入口。
 - 鼠灾 Continued 需安装同时更新的版本，才能主动识别本模组的新包名。
-- 新包名：`nanaloveyuki.leadyourpet.continued`。不包含原版创意工坊发布 ID。
+- 新包名：`nanaloveyuki.leadyourpet.continued`。`About/PublishedFileId.txt` 是本续作的创意工坊文件 ID，不是原版 ID。
 - IrisMenus（`Nanaloveyuki.IrisMenus`，1.6）可选。运行时检测到已启用且支持 1.6，并且公开菜单 API 存在时，用反射登记牵引、鼠蛋、离图三页，写入同一套设置。主程序集不引用 IrisMenus.dll。未安装、未启用、不是 1.6 或 API 对不上时不登记，原版设置窗口照常可用。不写入 `modDependencies`。
+- 饥与祸通过 `LeadYourPet.LeadYourPetApi` 调用。本模组不检测饥与祸，也不引用它的程序集。
 
 ## 替换原版
 
@@ -28,7 +29,8 @@ dotnet test Source/Tests/LeadYourPet.Tests.csproj -c Release -p:RimWorldDir="D:/
 ./scripts/verify-guard.ps1
 ./scripts/verify-guard.ps1 -NoDuplicate
 ./scripts/verify-integration.ps1 -MouseDisasterAssembly="F:/repo/Ratkin-Great-Famine-Year-Continued/1.6/Assemblies/MouseDisaster.dll"
-./scripts/build-and-deploy.ps1
+./scripts/deploy.sh
+./scripts/build-and-deploy.ps1 -RimWorldDir="E:/Apps/Steam/steamapps/common/RimWorld"
 ```
 
 测试包含原版规则回归、反射重载/默认参数/out 参数，以及原版持久化文件和 Def 内容快照。部署仅复制运行时文件，校验 SHA-256，不改启用列表、旧版目录或玩家存档。仓库是独立历史，不导入原版 Git 记录。

@@ -6,7 +6,6 @@ Assemblies/*.xml
 Guard/Assemblies/*.pdb
 Guard/Source/obj/
 Guard/Source/bin/
-About/PublishedFileId.txt
 Source/bin/
 Source/obj/
 Source/Tests/bin/

@@ -9,6 +9,8 @@ namespace LeadYourPet
 {
     public partial class LeadYourPetGameComponent
     {
+        internal int LinkCount => links.Count;
+
         private void ProcessLink(LeashLink link, int ticksGame)
         {
             if (link == null || link.Master == null || link.Pet == null)

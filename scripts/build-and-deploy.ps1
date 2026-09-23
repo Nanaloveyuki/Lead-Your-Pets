@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$RimWorldDir = 'D:\Appdata\Steam\steamapps\common\RimWorld',
+    [string]$RimWorldDir = $(if ($env:RIMWORLD_DIR) { $env:RIMWORLD_DIR } else { 'E:\Apps\Steam\steamapps\common\RimWorld' }),
     [ValidateSet('Debug', 'Release')][string]$Configuration = 'Release',
     [switch]$BuildOnly
 )
@@ -21,17 +21,30 @@ if (Test-Path $target) {
 }
 $files = @(
     foreach ($folder in @('About','Defs','Languages','Guard/Languages')) {
-        Get-ChildItem (Join-Path $root $folder) -File -Recurse
+        $path = Join-Path $root $folder
+        if (Test-Path $path) { Get-ChildItem $path -File -Recurse }
     }
     foreach ($file in @('Assemblies/LeadYourPet.dll','Guard/Assemblies/LeadYourPetContinuedGuard.dll','LoadFolders.xml','NOTICE','README.md','LICENSE')) {
-        Get-Item (Join-Path $root $file)
+        $path = Join-Path $root $file
+        if (Test-Path $path) { Get-Item $path }
     }
 )
+$prefix = $root.TrimEnd('\','/')
 foreach ($file in $files) {
-    $relative = $file.FullName.Substring($root.Length).TrimStart('\','/')
+    $full = $file.FullName
+    if (-not $full.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) { throw "File is outside root: $full" }
+    $relative = $full.Substring($prefix.Length).TrimStart('\','/')
     $destination = Join-Path $target $relative
     New-Item (Split-Path $destination -Parent) -ItemType Directory -Force | Out-Null
-    Copy-Item -LiteralPath $file.FullName -Destination $destination -Force
-    if ((Get-FileHash $file.FullName).Hash -ne (Get-FileHash $destination).Hash) { throw "Hash mismatch: $relative" }
+    Copy-Item -LiteralPath $full -Destination $destination -Force
+    if ((Get-FileHash -LiteralPath $full).Hash -ne (Get-FileHash -LiteralPath $destination).Hash) { throw "Hash mismatch: $relative" }
+}
+foreach ($folder in @('About','Defs','Languages','Guard/Languages')) {
+    $live = Join-Path $target $folder
+    if (!(Test-Path -LiteralPath $live)) { continue }
+    foreach ($deployed in (Get-ChildItem -LiteralPath $live -File -Recurse)) {
+        $relative = $deployed.FullName.Substring($target.TrimEnd('\','/').Length).TrimStart('\','/')
+        if (!(Test-Path -LiteralPath (Join-Path $root $relative))) { Remove-Item -LiteralPath $deployed.FullName -Force }
+    }
 }
 Write-Host "Deployed and SHA-256 verified $($files.Count) files: $target"
