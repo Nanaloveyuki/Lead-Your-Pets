@@ -94,9 +94,25 @@ namespace LeadYourPet
 
             registerPage = OptionalModApi.Resolve(registry, "RegisterSubItemListing", typeof(Mod), typeof(string), typeof(Func<string>), typeof(Action<Listing_Standard>));
             registerSearch = registry.GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .FirstOrDefault(method => method.Name == "RegisterSearchProvider" && method.GetParameters().Length >= 3);
+                .FirstOrDefault(method =>
+                {
+                    if (method.Name != "RegisterSearchProvider" || method.ContainsGenericParameters)
+                    {
+                        return false;
+                    }
+
+                    ParameterInfo[] parameters = method.GetParameters();
+                    if (parameters.Length < 3 || parameters[0].ParameterType != typeof(Mod) || parameters[1].ParameterType != typeof(string))
+                    {
+                        return false;
+                    }
+
+                    Type callback = parameters[2].ParameterType;
+                    return callback.IsGenericType && callback.GetGenericTypeDefinition() == typeof(Func<>) &&
+                        parameters.Skip(3).All(parameter => parameter.IsOptional);
+                });
             Type provider = registerSearch?.GetParameters()[2].ParameterType;
-            searchResult = provider != null && provider.IsGenericType ? provider.GetGenericArguments()[0].GetGenericArguments()[0] : null;
+            searchResult = provider?.GetGenericArguments()[0];
 
             anchor = OptionalModApi.Resolve(controls, "Anchor", typeof(Listing_Standard), typeof(string));
             section = OptionalModApi.Resolve(controls, "Section", typeof(Listing_Standard), typeof(string));
@@ -122,28 +138,32 @@ namespace LeadYourPet
         internal static void RegisterPage(Mod owner, string pageId, string titleKey, Action<Listing_Standard> draw, Func<IEnumerable<object>> search)
         {
             OptionalModApi.Invoke(registerPage, owner, pageId, (Func<string>)(() => titleKey.Translate()), draw);
-            Type sequence = typeof(IEnumerable<>).MakeGenericType(searchResult);
-            Delegate callback = Delegate.CreateDelegate(
-                typeof(Func<>).MakeGenericType(sequence),
-                new SearchAdapter(search, sequence),
-                nameof(SearchAdapter.Entries));
-            OptionalModApi.Invoke(registerSearch, owner, pageId, callback);
+            OptionalModApi.Invoke(registerSearch, owner, pageId, BindSearch(searchResult, search));
+        }
+
+        internal static Delegate BindSearch(Type sequence, Func<IEnumerable<object>> search)
+        {
+            Type element = sequence.IsGenericType ? sequence.GetGenericArguments()[0] : sequence;
+            MethodInfo entries = typeof(SearchAdapter).GetMethod("Entries", BindingFlags.Instance | BindingFlags.NonPublic)
+                .MakeGenericMethod(element);
+            return Delegate.CreateDelegate(typeof(Func<>).MakeGenericType(entries.ReturnType), new SearchAdapter(search), entries);
         }
 
         sealed class SearchAdapter
         {
             readonly Func<IEnumerable<object>> search;
-            readonly MethodInfo cast;
 
-            internal SearchAdapter(Func<IEnumerable<object>> search, Type sequence)
+            internal SearchAdapter(Func<IEnumerable<object>> search)
             {
                 this.search = search;
-                cast = typeof(Enumerable).GetMethod(nameof(Enumerable.Cast)).MakeGenericMethod(sequence.GetGenericArguments()[0]);
             }
 
-            internal object Entries()
+            IEnumerable<T> Entries<T>()
             {
-                return cast.Invoke(null, new object[] { search() });
+                foreach (object item in search())
+                {
+                    yield return (T)item;
+                }
             }
         }
 
