@@ -20,6 +20,8 @@ namespace LeadYourPet
 
             try
             {
+                ReleaseNonPlayerTravelLeashesBeforeExit(master);
+
                 List<LeashLink> masterLinks = GetLinksForMaster(master);
                 if (masterLinks == null || masterLinks.Count == 0)
                 {
@@ -55,6 +57,44 @@ namespace LeadYourPet
             return behavior == LeashedPawnMapExitBehavior.LeaveMap || behavior == LeashedPawnMapExitBehavior.Disappear
                 ? behavior
                 : LeashedPawnMapExitBehavior.StayInPlace;
+        }
+
+        private void ReleaseNonPlayerTravelLeashesBeforeExit(Pawn master)
+        {
+            if (master == null || master.Faction == Faction.OfPlayer)
+            {
+                return;
+            }
+
+            List<LeashLink> masterLinks = GetLinksForMaster(master);
+            if (masterLinks == null || masterLinks.Count == 0)
+            {
+                return;
+            }
+
+            Lord masterLord = master.GetLord();
+            List<LeashLink> snapshot = new List<LeashLink>(masterLinks);
+            for (int i = 0; i < snapshot.Count; i++)
+            {
+                LeashLink link = snapshot[i];
+                if (link == null || GetLinkForPet(link.Pet) != link)
+                {
+                    continue;
+                }
+
+                MouseEggState state = link.Kind == LeashLinkKind.MouseEggPet ? GetMouseEggState(link.Pet) : null;
+                if (!LeadYourPetRules.ShouldReleaseNonPlayerTravelLeashOnMasterExit(
+                    masterIsPlayer: false,
+                    petIsTravelStock: state != null && state.IsTravelStock,
+                    petSharesMasterLord: masterLord != null && link.Pet.GetLord() == masterLord))
+                {
+                    continue;
+                }
+
+                DetachPetFromMasterLord(link);
+                EndLink(link, false);
+                ClearTravelStock(link.Pet);
+            }
         }
 
         private void HandleLeashedPawnAtMapExit(LeashLink link, LeashedPawnMapExitBehavior behavior, Rot4 exitDir, Map map)

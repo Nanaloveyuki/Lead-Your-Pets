@@ -161,7 +161,7 @@ namespace LeadYourPet
 
         public static bool IsColonistMouseEgg(Pawn pawn)
         {
-            return pawn != null && pawn.IsColonist;
+            return pawn != null && pawn.IsColonist && IsMouseEgg(pawn);
         }
 
         public static bool IsProtectedLeashedMouseEgg(Pawn pawn)

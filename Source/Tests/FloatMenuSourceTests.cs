@@ -17,6 +17,31 @@ namespace LeadYourPet.Tests
             Assert.Contains("不能继续看着孩子", source);
         }
 
+        [Fact]
+        public void ColonistMouseEggRequiresMouseEggCheck()
+        {
+            string source = File.ReadAllText(FindUtilitySourcePath());
+
+            Assert.Contains("pawn.IsColonist && IsMouseEgg(pawn)", source);
+        }
+
+        private static string FindUtilitySourcePath()
+        {
+            DirectoryInfo directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (directory != null)
+            {
+                string path = Path.Combine(directory.FullName, "Source", "Core", "LeadYourPetUtility.cs");
+                if (File.Exists(path))
+                {
+                    return path;
+                }
+
+                directory = directory.Parent;
+            }
+
+            throw new InvalidOperationException("未找到 LeadYourPetUtility.cs。");
+        }
+
         private static string FindFloatMenuSourcePath()
         {
             DirectoryInfo directory = new DirectoryInfo(Directory.GetCurrentDirectory());

@@ -235,6 +235,27 @@ namespace LeadYourPet.Tests
         }
 
         [Fact]
+        public void ReleasesNonPlayerTravelLeashWhenMasterLeaves()
+        {
+            Assert.True(LeadYourPetRules.ShouldReleaseNonPlayerTravelLeashOnMasterExit(
+                masterIsPlayer: false,
+                petIsTravelStock: true,
+                petSharesMasterLord: true));
+            Assert.False(LeadYourPetRules.ShouldReleaseNonPlayerTravelLeashOnMasterExit(
+                masterIsPlayer: true,
+                petIsTravelStock: true,
+                petSharesMasterLord: true));
+            Assert.False(LeadYourPetRules.ShouldReleaseNonPlayerTravelLeashOnMasterExit(
+                masterIsPlayer: false,
+                petIsTravelStock: false,
+                petSharesMasterLord: true));
+            Assert.False(LeadYourPetRules.ShouldReleaseNonPlayerTravelLeashOnMasterExit(
+                masterIsPlayer: false,
+                petIsTravelStock: true,
+                petSharesMasterLord: false));
+        }
+
+        [Fact]
         public void UsesExpectedAnimationDurationForWhirl()
         {
             Assert.Equal(90, LeadYourPetRules.GetInteractionAnimationDuration(LeadYourPetInteractionKind.Whirl));
