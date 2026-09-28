@@ -21,6 +21,8 @@
   <LeadYourPet_Reason_NotRatkinMouseEgg>不是有效的鼠族鼠蛋目标</LeadYourPet_Reason_NotRatkinMouseEgg>
   <LeadYourPet_Reason_Dead>已经死亡</LeadYourPet_Reason_Dead>
   <LeadYourPet_Reason_TooOld>年龄过大</LeadYourPet_Reason_TooOld>
+  <LeadYourPet_Reason_TooYoung>年龄过小</LeadYourPet_Reason_TooYoung>
+  <LeadYourPet_Reason_RatkinYoungPetsDisabled>已关闭鼠蛋宠物</LeadYourPet_Reason_RatkinYoungPetsDisabled>
   <LeadYourPet_Reason_NotOnCurrentMap>不在当前地图</LeadYourPet_Reason_NotOnCurrentMap>
   <LeadYourPet_Reason_NoFoodNeed>目标不需要进食</LeadYourPet_Reason_NoFoodNeed>
   <LeadYourPet_Reason_NoSuitableFood>没有合适的食物</LeadYourPet_Reason_NoSuitableFood>
@@ -69,14 +71,28 @@
   <LeadYourPet_Settings_LeashedPawnMapExitBehavior_StayInPlace>留在原地</LeadYourPet_Settings_LeashedPawnMapExitBehavior_StayInPlace>
   <LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap>可以离开时离开地图</LeadYourPet_Settings_LeashedPawnMapExitBehavior_LeaveMap>
   <LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear>直接消失</LeadYourPet_Settings_LeashedPawnMapExitBehavior_Disappear>
-  <LeadYourPet_Reason_NotHumanlikeJuvenile>不是14岁以下的智人种幼崽</LeadYourPet_Reason_NotHumanlikeJuvenile>
+  <LeadYourPet_Reason_NotHumanlikeJuvenile>不在设定的宠物年龄范围内</LeadYourPet_Reason_NotHumanlikeJuvenile>
 
   <LeadYourPet_Menu_Leash>牵引</LeadYourPet_Menu_Leash>
   <LeadYourPet_Menu_MouseEgg>鼠蛋</LeadYourPet_Menu_MouseEgg>
+  <LeadYourPet_Menu_Age>年龄</LeadYourPet_Menu_Age>
+  <LeadYourPet_Menu_Visitors>来客</LeadYourPet_Menu_Visitors>
   <LeadYourPet_Menu_MapExit>离图</LeadYourPet_Menu_MapExit>
   <LeadYourPet_Settings_InfiniteLeash>拴绳无限长度</LeadYourPet_Settings_InfiniteLeash>
   <LeadYourPet_Settings_InfiniteLeash_Tooltip>开启后忽略最大拴绳长度。</LeadYourPet_Settings_InfiniteLeash_Tooltip>
   <LeadYourPet_Settings_ShowInteractionText>显示头顶浮字</LeadYourPet_Settings_ShowInteractionText>
   <LeadYourPet_Settings_ShowInteractionText_Tooltip>关闭后不再显示互动时的头顶文字。</LeadYourPet_Settings_ShowInteractionText_Tooltip>
   <LeadYourPet_Settings_MaxLeashLength>拴绳最高长度</LeadYourPet_Settings_MaxLeashLength>
+  <LeadYourPet_Settings_AllowAnimalPets>允许牵引动物</LeadYourPet_Settings_AllowAnimalPets>
+  <LeadYourPet_Settings_AllowAnimalPets_Tooltip>关闭后不再出现动物牵引命令。已经牵着的动物仍保持牵引。</LeadYourPet_Settings_AllowAnimalPets_Tooltip>
+  <LeadYourPet_Settings_AllowRatkinYoungPets>允许鼠蛋宠物</LeadYourPet_Settings_AllowRatkinYoungPets>
+  <LeadYourPet_Settings_AllowRatkinYoungPets_Tooltip>关闭后不能新牵鼠蛋。已有的鼠蛋牵引会在下次检查时结束。</LeadYourPet_Settings_AllowRatkinYoungPets_Tooltip>
+  <LeadYourPet_Settings_MinPetAge>宠物下限年龄：{0}</LeadYourPet_Settings_MinPetAge>
+  <LeadYourPet_Settings_MinPetAge_Tooltip>低于这个岁数的动物和智人不能作为宠物牵引。0 包括新生儿。</LeadYourPet_Settings_MinPetAge_Tooltip>
+  <LeadYourPet_Settings_MaxPetAge>宠物上限年龄：{0}</LeadYourPet_Settings_MaxPetAge>
+  <LeadYourPet_Settings_MaxPetAge_Tooltip>达到这个岁数就不能作为宠物牵引。默认是未满 14 岁。</LeadYourPet_Settings_MaxPetAge_Tooltip>
+  <LeadYourPet_Settings_VisitorsLeadRatkinYoung>来客和商队牵着鼠蛋</LeadYourPet_Settings_VisitorsLeadRatkinYoung>
+  <LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip>关闭后，普通来客和商队不再带着生成的鼠蛋到来。鼠灾队伍仍会带着自己的孩子。</LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip>
+  <LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount>每支来客队伍的鼠蛋数量：{0}</LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount>
+  <LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount_Tooltip>普通来客或商队尝试牵着的鼠蛋数量。0 表示不带。默认是 2。</LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount_Tooltip>
 </LanguageData>

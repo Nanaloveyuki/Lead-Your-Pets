@@ -154,7 +154,69 @@ namespace LeadYourPet
 
         public static int ResolveOrdinaryTravelMouseEggTargetCount(bool traderLord, bool hasEligibleAdults)
         {
-            return traderLord && hasEligibleAdults ? 2 : 0;
+            return ResolveOrdinaryTravelMouseEggTargetCount(traderLord, false, hasEligibleAdults, 2, true);
+        }
+
+        public static int ResolveOrdinaryTravelMouseEggTargetCount(bool traderLord, bool visitorLord, bool hasEligibleAdults, int configuredCount, bool visitorsLeadRatkinYoung)
+        {
+            if (!visitorsLeadRatkinYoung || !hasEligibleAdults || configuredCount <= 0)
+            {
+                return 0;
+            }
+
+            if (!traderLord && !visitorLord)
+            {
+                return 0;
+            }
+
+            return configuredCount;
+        }
+
+        public static bool IsWithinPetAgeRange(float biologicalAgeYears, int minAgeYears, int maxAgeYears)
+        {
+            if (biologicalAgeYears < 0f)
+            {
+                return false;
+            }
+
+            int min = minAgeYears < 0 ? 0 : minAgeYears;
+            int max = maxAgeYears < min ? min : maxAgeYears;
+            return biologicalAgeYears >= min && biologicalAgeYears < max;
+        }
+
+        public static void ClampPetControlSettings(ref int minPetAgeYears, ref int maxPetAgeYears, ref int ordinaryTravelRatkinYoungCount, ref int maxLeashLength, ref int maxMouseEggPetLeashStartDistance)
+        {
+            maxLeashLength = maxLeashLength < 3 ? 3 : (maxLeashLength > 30 ? 30 : maxLeashLength);
+            maxMouseEggPetLeashStartDistance = maxMouseEggPetLeashStartDistance < 1 ? 1 : (maxMouseEggPetLeashStartDistance > 30 ? 30 : maxMouseEggPetLeashStartDistance);
+            if (minPetAgeYears < 0)
+            {
+                minPetAgeYears = 0;
+            }
+
+            if (minPetAgeYears > LeadYourPetSettings.AbsoluteMaxPetAgeYears)
+            {
+                minPetAgeYears = LeadYourPetSettings.AbsoluteMaxPetAgeYears;
+            }
+
+            if (maxPetAgeYears < minPetAgeYears)
+            {
+                maxPetAgeYears = minPetAgeYears;
+            }
+
+            if (maxPetAgeYears > LeadYourPetSettings.AbsoluteMaxPetAgeYears)
+            {
+                maxPetAgeYears = LeadYourPetSettings.AbsoluteMaxPetAgeYears;
+            }
+
+            if (ordinaryTravelRatkinYoungCount < 0)
+            {
+                ordinaryTravelRatkinYoungCount = 0;
+            }
+
+            if (ordinaryTravelRatkinYoungCount > LeadYourPetSettings.MaxOrdinaryTravelRatkinYoungCount)
+            {
+                ordinaryTravelRatkinYoungCount = LeadYourPetSettings.MaxOrdinaryTravelRatkinYoungCount;
+            }
         }
 
         public static LeashedMouseEggDutyState ResolveLeashedMouseEggDutyState(bool masterSleeping, bool masterEating)

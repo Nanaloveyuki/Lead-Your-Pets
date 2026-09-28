@@ -30,6 +30,35 @@ namespace LeadYourPet
             bool showInteractionText = Settings.showInteractionText;
             listing.CheckboxLabeled("显示头顶浮字", ref showInteractionText, "关闭后不再显示互动时的头顶文字。");
             Settings.showInteractionText = showInteractionText;
+            bool allowAnimalPets = Settings.allowAnimalPets;
+            listing.CheckboxLabeled("LeadYourPet_Settings_AllowAnimalPets".Translate(), ref allowAnimalPets, "LeadYourPet_Settings_AllowAnimalPets_Tooltip".Translate());
+            Settings.allowAnimalPets = allowAnimalPets;
+
+            bool allowRatkinYoungPets = Settings.allowRatkinYoungPets;
+            listing.CheckboxLabeled("LeadYourPet_Settings_AllowRatkinYoungPets".Translate(), ref allowRatkinYoungPets, "LeadYourPet_Settings_AllowRatkinYoungPets_Tooltip".Translate());
+            Settings.allowRatkinYoungPets = allowRatkinYoungPets;
+
+            bool visitorsLeadRatkinYoung = Settings.visitorsLeadRatkinYoung;
+            listing.CheckboxLabeled("LeadYourPet_Settings_VisitorsLeadRatkinYoung".Translate(), ref visitorsLeadRatkinYoung, "LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip".Translate());
+            Settings.visitorsLeadRatkinYoung = visitorsLeadRatkinYoung;
+
+            listing.Label("LeadYourPet_Settings_MinPetAge".Translate(Settings.minPetAgeYears));
+            Settings.minPetAgeYears = Mathf.RoundToInt(listing.Slider(Settings.minPetAgeYears, 0f, LeadYourPetSettings.AbsoluteMaxPetAgeYears));
+            if (Settings.maxPetAgeYears < Settings.minPetAgeYears)
+            {
+                Settings.maxPetAgeYears = Settings.minPetAgeYears;
+            }
+
+            listing.Label("LeadYourPet_Settings_MaxPetAge".Translate(Settings.maxPetAgeYears));
+            Settings.maxPetAgeYears = Mathf.RoundToInt(listing.Slider(Settings.maxPetAgeYears, Settings.minPetAgeYears, LeadYourPetSettings.AbsoluteMaxPetAgeYears));
+
+            if (Settings.visitorsLeadRatkinYoung)
+            {
+                listing.Label("LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount".Translate(Settings.ordinaryTravelRatkinYoungCount));
+                Settings.ordinaryTravelRatkinYoungCount = Mathf.RoundToInt(listing.Slider(Settings.ordinaryTravelRatkinYoungCount, 0f, LeadYourPetSettings.MaxOrdinaryTravelRatkinYoungCount));
+            }
+
+            Settings.Clamp();
 
             if (!Settings.infiniteLeash)
             {

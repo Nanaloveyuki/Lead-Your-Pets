@@ -178,10 +178,14 @@ namespace LeadYourPet
             }
 
             bool traderLord = lord.LordJob is LordJob_TradeWithColony;
+            bool visitorLord = lord.LordJob is LordJob_VisitColony;
             Pawn trader = TraderCaravanUtility.FindTrader(lord);
             int remainingMouseEggs = LeadYourPetRules.ResolveOrdinaryTravelMouseEggTargetCount(
                 traderLord: traderLord,
-                hasEligibleAdults: adults.Count > 0);
+                visitorLord: visitorLord,
+                hasEligibleAdults: adults.Count > 0,
+                configuredCount: LeadYourPetUtility.OrdinaryTravelRatkinYoungCount,
+                visitorsLeadRatkinYoung: LeadYourPetUtility.VisitorsLeadRatkinYoung);
             foreach (Pawn adult in adults.InRandomOrder())
             {
                 bool hadCarriedEgg = adult?.carryTracker?.CarriedThing is Pawn carriedEgg

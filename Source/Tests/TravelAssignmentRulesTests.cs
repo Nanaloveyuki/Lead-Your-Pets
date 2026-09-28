@@ -287,6 +287,56 @@ namespace LeadYourPet.Tests
                 traderLord: true,
                 hasEligibleAdults: false));
         }
+        [Fact]
+        public void AcceptsAgeInsideConfiguredRangeAndRejectsBothEdges()
+        {
+            Assert.True(LeadYourPetRules.IsWithinPetAgeRange(0f, 0, 14));
+            Assert.True(LeadYourPetRules.IsWithinPetAgeRange(13.99f, 0, 14));
+            Assert.False(LeadYourPetRules.IsWithinPetAgeRange(14f, 0, 14));
+            Assert.False(LeadYourPetRules.IsWithinPetAgeRange(2.9f, 3, 14));
+            Assert.True(LeadYourPetRules.IsWithinPetAgeRange(3f, 3, 14));
+        }
+
+        [Fact]
+        public void OrdinaryVisitorsLeadConfiguredMouseEggCountWhenEnabled()
+        {
+            Assert.Equal(2, LeadYourPetRules.ResolveOrdinaryTravelMouseEggTargetCount(
+                traderLord: false,
+                visitorLord: true,
+                hasEligibleAdults: true,
+                configuredCount: 2,
+                visitorsLeadRatkinYoung: true));
+            Assert.Equal(0, LeadYourPetRules.ResolveOrdinaryTravelMouseEggTargetCount(
+                traderLord: true,
+                visitorLord: false,
+                hasEligibleAdults: true,
+                configuredCount: 4,
+                visitorsLeadRatkinYoung: false));
+            Assert.Equal(0, LeadYourPetRules.ResolveOrdinaryTravelMouseEggTargetCount(
+                traderLord: true,
+                visitorLord: false,
+                hasEligibleAdults: true,
+                configuredCount: 0,
+                visitorsLeadRatkinYoung: true));
+        }
+
+        [Fact]
+        public void SettingsClampKeepsAgeOrderAndTravelCountBounds()
+        {
+            int min = 40;
+            int max = 2;
+            int count = 99;
+            int leash = 1;
+            int distance = 0;
+
+            LeadYourPetRules.ClampPetControlSettings(ref min, ref max, ref count, ref leash, ref distance);
+
+            Assert.Equal(40, min);
+            Assert.Equal(40, max);
+            Assert.Equal(LeadYourPetSettings.MaxOrdinaryTravelRatkinYoungCount, count);
+            Assert.Equal(3, leash);
+            Assert.Equal(1, distance);
+        }
 
         [Fact]
         public void OverridesBabyCryMoodForMouseEggPawnOnly()

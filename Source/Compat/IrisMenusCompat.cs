@@ -236,12 +236,18 @@ namespace LeadYourPet
     {
         string lengthBuffer = string.Empty;
         string distanceBuffer = string.Empty;
+        string minAgeBuffer = string.Empty;
+        string maxAgeBuffer = string.Empty;
+        string travelCountBuffer = string.Empty;
         bool lengthVisible;
+        bool travelCountVisible;
 
         internal void Register(Mod owner)
         {
             IrisMenusCompat.RegisterPage(owner, "leash", "LeadYourPet_Menu_Leash", DrawLeash, SearchLeash);
             IrisMenusCompat.RegisterPage(owner, "mouse-egg", "LeadYourPet_Menu_MouseEgg", DrawMouseEgg, SearchMouseEgg);
+            IrisMenusCompat.RegisterPage(owner, "age", "LeadYourPet_Menu_Age", DrawAge, SearchAge);
+            IrisMenusCompat.RegisterPage(owner, "visitors", "LeadYourPet_Menu_Visitors", DrawVisitors, SearchVisitors);
             IrisMenusCompat.RegisterPage(owner, "map-exit", "LeadYourPet_Menu_MapExit", DrawMapExit, SearchMapExit);
         }
 
@@ -261,6 +267,9 @@ namespace LeadYourPet
             IrisMenusCompat.Anchor(list, "text");
             IrisMenusCompat.Checkbox(list, "LeadYourPet_Settings_ShowInteractionText".Translate(), ref settings.showInteractionText,
                 "LeadYourPet_Settings_ShowInteractionText_Tooltip".Translate());
+            IrisMenusCompat.Anchor(list, "animals");
+            IrisMenusCompat.Checkbox(list, "LeadYourPet_Settings_AllowAnimalPets".Translate(), ref settings.allowAnimalPets,
+                "LeadYourPet_Settings_AllowAnimalPets_Tooltip".Translate());
             if (!lengthVisible)
             {
                 return;
@@ -274,6 +283,7 @@ namespace LeadYourPet
 
             IrisMenusCompat.Number(list, "LeadYourPet_Settings_MaxLeashLength".Translate(), ref settings.maxLeashLength,
                 ref lengthBuffer, 3, 30);
+            settings.Clamp();
         }
 
         void DrawMouseEgg(Listing_Standard list)
@@ -283,8 +293,10 @@ namespace LeadYourPet
             {
                 return;
             }
-
             IrisMenusCompat.Section(list, "LeadYourPet_Menu_MouseEgg".Translate());
+            IrisMenusCompat.Anchor(list, "mouse-eggs");
+            IrisMenusCompat.Checkbox(list, "LeadYourPet_Settings_AllowRatkinYoungPets".Translate(), ref settings.allowRatkinYoungPets,
+                "LeadYourPet_Settings_AllowRatkinYoungPets_Tooltip".Translate());
             IrisMenusCompat.Anchor(list, "distance", 34f);
             if (distanceBuffer.Length == 0)
             {
@@ -293,6 +305,70 @@ namespace LeadYourPet
 
             IrisMenusCompat.Number(list, "LeadYourPet_Settings_MouseEggLeashStartDistance".Translate(),
                 ref settings.maxMouseEggPetLeashStartDistance, ref distanceBuffer, 1, 30);
+            settings.Clamp();
+        }
+
+        void DrawAge(Listing_Standard list)
+        {
+            LeadYourPetSettings settings = LeadYourPetMod.Settings;
+            if (settings == null)
+            {
+                return;
+            }
+
+            IrisMenusCompat.Section(list, "LeadYourPet_Menu_Age".Translate());
+            IrisMenusCompat.Anchor(list, "min-age", 34f);
+            if (minAgeBuffer.Length == 0)
+            {
+                minAgeBuffer = settings.minPetAgeYears.ToString();
+            }
+
+            IrisMenusCompat.Number(list, "LeadYourPet_Settings_MinPetAge".Translate(settings.minPetAgeYears),
+                ref settings.minPetAgeYears, ref minAgeBuffer, 0, LeadYourPetSettings.AbsoluteMaxPetAgeYears);
+            if (settings.maxPetAgeYears < settings.minPetAgeYears)
+            {
+                settings.maxPetAgeYears = settings.minPetAgeYears;
+                maxAgeBuffer = settings.maxPetAgeYears.ToString();
+            }
+
+            IrisMenusCompat.Anchor(list, "max-age", 34f);
+            if (maxAgeBuffer.Length == 0)
+            {
+                maxAgeBuffer = settings.maxPetAgeYears.ToString();
+            }
+
+            IrisMenusCompat.Number(list, "LeadYourPet_Settings_MaxPetAge".Translate(settings.maxPetAgeYears),
+                ref settings.maxPetAgeYears, ref maxAgeBuffer, settings.minPetAgeYears, LeadYourPetSettings.AbsoluteMaxPetAgeYears);
+            settings.Clamp();
+        }
+
+        void DrawVisitors(Listing_Standard list)
+        {
+            LeadYourPetSettings settings = LeadYourPetMod.Settings;
+            if (settings == null)
+            {
+                return;
+            }
+
+            travelCountVisible = settings.visitorsLeadRatkinYoung;
+            IrisMenusCompat.Section(list, "LeadYourPet_Menu_Visitors".Translate());
+            IrisMenusCompat.Anchor(list, "visitors-lead");
+            IrisMenusCompat.Checkbox(list, "LeadYourPet_Settings_VisitorsLeadRatkinYoung".Translate(), ref settings.visitorsLeadRatkinYoung,
+                "LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip".Translate());
+            if (!travelCountVisible)
+            {
+                return;
+            }
+
+            IrisMenusCompat.Anchor(list, "travel-count", 34f);
+            if (travelCountBuffer.Length == 0)
+            {
+                travelCountBuffer = settings.ordinaryTravelRatkinYoungCount.ToString();
+            }
+
+            IrisMenusCompat.Number(list, "LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount".Translate(settings.ordinaryTravelRatkinYoungCount),
+                ref settings.ordinaryTravelRatkinYoungCount, ref travelCountBuffer, 0, LeadYourPetSettings.MaxOrdinaryTravelRatkinYoungCount);
+            settings.Clamp();
         }
 
         void DrawMapExit(Listing_Standard list)
@@ -315,6 +391,8 @@ namespace LeadYourPet
                 "LeadYourPet_Settings_InfiniteLeash_Tooltip");
             yield return IrisMenusCompat.Entry("text", "LeadYourPet_Settings_ShowInteractionText", "mote text",
                 "LeadYourPet_Settings_ShowInteractionText_Tooltip");
+            yield return IrisMenusCompat.Entry("animals", "LeadYourPet_Settings_AllowAnimalPets", "animal pet",
+                "LeadYourPet_Settings_AllowAnimalPets_Tooltip");
             if (lengthVisible)
             {
                 yield return IrisMenusCompat.Entry("length", "LeadYourPet_Settings_MaxLeashLength", "max leash length");
@@ -323,7 +401,27 @@ namespace LeadYourPet
 
         IEnumerable<object> SearchMouseEgg()
         {
-            yield return IrisMenusCompat.Entry("distance", "LeadYourPet_Settings_MouseEggLeashStartDistance", "mouse egg start distance");
+            yield return IrisMenusCompat.Entry("mouse-eggs", "LeadYourPet_Settings_AllowRatkinYoungPets", "young ratkin pet",
+                "LeadYourPet_Settings_AllowRatkinYoungPets_Tooltip");
+            yield return IrisMenusCompat.Entry("distance", "LeadYourPet_Settings_MouseEggLeashStartDistance", "young ratkin start distance");
+        }
+
+        IEnumerable<object> SearchAge()
+        {
+            yield return IrisMenusCompat.Entry("min-age", "LeadYourPet_Settings_MinPetAge", "minimum age years",
+                "LeadYourPet_Settings_MinPetAge_Tooltip");
+            yield return IrisMenusCompat.Entry("max-age", "LeadYourPet_Settings_MaxPetAge", "maximum age years",
+                "LeadYourPet_Settings_MaxPetAge_Tooltip");
+        }
+
+        IEnumerable<object> SearchVisitors()
+        {
+            yield return IrisMenusCompat.Entry("visitors-lead", "LeadYourPet_Settings_VisitorsLeadRatkinYoung", "visitor trader caravan young ratkin",
+                "LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip");
+            if (travelCountVisible)
+            {
+                yield return IrisMenusCompat.Entry("travel-count", "LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount", "caravan young ratkin count");
+            }
         }
 
         IEnumerable<object> SearchMapExit()

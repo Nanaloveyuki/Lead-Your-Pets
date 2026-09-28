@@ -15,7 +15,7 @@ namespace LeadYourPet
     public static class LeadYourPetUtility
     {
         public const string HarmonyId = "lezhizhong.leadyourpet";
-        public const float HumanlikeJuvenileMaxAge = 14f;
+
         private const string MouseDisasterPackageId = "lezhizhong.mouse.disaster.famine";
         private const string MouseDisasterChildPawnKindDefName = "MouseDisaster_BeggarRatkinChild";
         private const string MouseDisasterTraderPawnKindDefName = "MouseDisaster_TraderRatkinAdult";
@@ -81,6 +81,12 @@ namespace LeadYourPet
         public static float HardLeashLength => MaxLeashLength >= 999 ? 999f : MaxLeashLength * 1.5f;
         public static float FollowThreshold => Mathf.Max(2f, MaxLeashLength - 2f);
         public static int MaxMouseEggPetLeashStartDistance => LeadYourPetMod.Settings == null ? 10 : Mathf.Max(1, LeadYourPetMod.Settings.maxMouseEggPetLeashStartDistance);
+        public static int MinPetAgeYears => LeadYourPetMod.Settings == null ? LeadYourPetSettings.DefaultMinPetAgeYears : LeadYourPetMod.Settings.minPetAgeYears;
+        public static int MaxPetAgeYears => LeadYourPetMod.Settings == null ? LeadYourPetSettings.DefaultMaxPetAgeYears : LeadYourPetMod.Settings.maxPetAgeYears;
+        public static bool AllowAnimalPets => LeadYourPetMod.Settings == null || LeadYourPetMod.Settings.allowAnimalPets;
+        public static bool AllowRatkinYoungPets => LeadYourPetMod.Settings == null || LeadYourPetMod.Settings.allowRatkinYoungPets;
+        public static bool VisitorsLeadRatkinYoung => LeadYourPetMod.Settings == null || LeadYourPetMod.Settings.visitorsLeadRatkinYoung;
+        public static int OrdinaryTravelRatkinYoungCount => LeadYourPetMod.Settings == null ? LeadYourPetSettings.DefaultOrdinaryTravelRatkinYoungCount : LeadYourPetMod.Settings.ordinaryTravelRatkinYoungCount;
 
         public static bool IsPlayerCaravanMaster(Pawn pawn)
         {
@@ -99,12 +105,14 @@ namespace LeadYourPet
 
         public static bool IsEligibleAnimalPet(Pawn pawn)
         {
-            return pawn != null
+            return AllowAnimalPets
+                && pawn != null
                 && pawn.Spawned
                 && pawn.Faction == Faction.OfPlayer
                 && pawn.RaceProps.Animal
                 && !pawn.Dead
-                && !pawn.Downed;
+                && !pawn.Downed
+                && IsWithinConfiguredPetAge(pawn);
         }
 
         public static bool IsRatkinHumanlike(Pawn pawn)
@@ -125,10 +133,14 @@ namespace LeadYourPet
 
         public static bool IsHumanlikeJuvenile(Pawn pawn)
         {
+            return IsWithinConfiguredPetAge(pawn) && pawn.RaceProps.Humanlike;
+        }
+
+        public static bool IsWithinConfiguredPetAge(Pawn pawn)
+        {
             return pawn != null
-                && pawn.RaceProps.Humanlike
                 && pawn.ageTracker != null
-                && pawn.ageTracker.AgeBiologicalYearsFloat < HumanlikeJuvenileMaxAge;
+                && LeadYourPetRules.IsWithinPetAgeRange(pawn.ageTracker.AgeBiologicalYearsFloat, MinPetAgeYears, MaxPetAgeYears);
         }
 
         public static bool IsMouseEgg(Pawn pawn)
@@ -193,9 +205,23 @@ namespace LeadYourPet
         public static bool CanBePetMouseEgg(Pawn pawn, out string reasonKey)
         {
             reasonKey = null;
-            if (!IsHumanlikeJuvenile(pawn))
+            if (!AllowRatkinYoungPets)
+            {
+                reasonKey = "LeadYourPet_Reason_RatkinYoungPetsDisabled";
+                return false;
+            }
+
+            if (pawn == null || pawn.ageTracker == null || !pawn.RaceProps.Humanlike)
             {
                 reasonKey = "LeadYourPet_Reason_NotHumanlikeJuvenile";
+                return false;
+            }
+
+            if (!IsWithinConfiguredPetAge(pawn))
+            {
+                reasonKey = pawn.ageTracker.AgeBiologicalYearsFloat < MinPetAgeYears
+                    ? "LeadYourPet_Reason_TooYoung"
+                    : "LeadYourPet_Reason_TooOld";
                 return false;
             }
 
@@ -590,9 +616,7 @@ namespace LeadYourPet
                 return mouseDisasterPawn;
             }
 
-            float randomAge = kind.defName == MouseDisasterChildPawnKindDefName
-                ? Rand.Range(1f, 6.9f)
-                : Rand.Range(0f, HumanlikeJuvenileMaxAge - 0.01f);
+            float randomAge = ResolveGeneratedTravelAge(kind.defName == MouseDisasterChildPawnKindDefName);
             // 这里不能把非鼠族来访派系直接传给 PawnGenerator，否则会被派系的人种/Kind 规则污染，生成成普通智人。
             PawnGenerationRequest request = new PawnGenerationRequest(kind, null, PawnGenerationContext.NonPlayer, map.Tile, forceGenerateNewPawn: true, allowDead: false, allowDowned: true, canGeneratePawnRelations: true, mustBeCapableOfViolence: false, fixedBiologicalAge: randomAge, developmentalStages: DevelopmentalStage.Baby | DevelopmentalStage.Child, forceNoBackstory: true);
             Pawn pawn = PawnGenerator.GeneratePawn(request);
@@ -610,6 +634,26 @@ namespace LeadYourPet
             {
                 pawn.SetFaction(null);
             }
+        }
+
+        internal static float ResolveGeneratedTravelAge(bool mouseDisasterChildKind)
+        {
+            float min = MinPetAgeYears;
+            float maxExclusive = Mathf.Max(min + 0.01f, MaxPetAgeYears);
+            if (mouseDisasterChildKind)
+            {
+                float lower = Mathf.Max(1f, min);
+                float upper = Mathf.Min(6.9f, maxExclusive - 0.01f);
+                if (upper < lower)
+                {
+                    lower = min;
+                    upper = maxExclusive - 0.01f;
+                }
+
+                return Rand.Range(lower, upper);
+            }
+
+            return Rand.Range(min, maxExclusive - 0.01f);
         }
 
         private static Pawn TryGenerateMouseDisasterTravelPawn(PawnKindDef kind)
