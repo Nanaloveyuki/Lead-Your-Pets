@@ -22,12 +22,23 @@ namespace LeadYourPet
                 return;
             }
 
-            ApplyInteraction(master, pet, kind, LeadYourPetUtility.IsBidirectionalInteraction(kind));
+            ApplyInteraction(master, pet, kind, LeadYourPetUtility.IsBidirectionalInteraction(kind), false);
         }
 
         private void ApplyInteraction(Pawn master, Pawn pet, LeadYourPetInteractionKind kind, bool applyPhysicalEffects)
         {
+            ApplyInteraction(master, pet, kind, applyPhysicalEffects, true);
+        }
+
+        private void ApplyInteraction(Pawn master, Pawn pet, LeadYourPetInteractionKind kind, bool applyPhysicalEffects, bool automatic)
+        {
             if (!LeadYourPetUtility.CanPerformInteraction(pet, kind, out _))
+            {
+                return;
+            }
+
+            if (LeadYourPetUtility.ShouldPreserveMapExitMovement(pet)
+                || (automatic && ShouldSuppressTravelAutoInteraction(GetLinkForPet(pet))))
             {
                 return;
             }
@@ -46,7 +57,7 @@ namespace LeadYourPet
 
         private void ApplyImmediateInteractionEffects(Pawn master, Pawn pet, LeadYourPetInteractionKind kind)
         {
-            if (pet == null)
+            if (pet == null || LeadYourPetUtility.ShouldPreserveMapExitMovement(pet))
             {
                 return;
             }

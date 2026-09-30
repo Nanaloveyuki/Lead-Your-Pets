@@ -296,7 +296,10 @@ namespace LeadYourPet
             Pawn pawn = __instance == null ? null : PawnField(__instance);
             Pawn targetPawn = newJob?.targetA.Thing as Pawn;
             if (LeadYourPetUtility.ShouldBlockExternalToddlerPickup(targetPawn, newJob?.def?.defName)
-                || LeadYourPetUtility.ShouldBlockExternalToddlerPickup(pawn, newJob?.def?.defName))
+                || LeadYourPetUtility.ShouldBlockExternalToddlerPickup(pawn, newJob?.def?.defName)
+                || (LeadYourPetRules.IsExternalToddlerHoldJob(newJob?.def?.defName)
+                    && (LeadYourPetUtility.ShouldPreserveMapExitMovement(targetPawn)
+                        || LeadYourPetUtility.ShouldPreserveMapExitMovement(pawn))))
             {
                 return false;
             }

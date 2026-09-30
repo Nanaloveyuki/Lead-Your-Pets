@@ -249,7 +249,7 @@ namespace LeadYourPet.Tests
                 masterIsPlayer: false,
                 petIsTravelStock: false,
                 petSharesMasterLord: true));
-            Assert.False(LeadYourPetRules.ShouldReleaseNonPlayerTravelLeashOnMasterExit(
+            Assert.True(LeadYourPetRules.ShouldReleaseNonPlayerTravelLeashOnMasterExit(
                 masterIsPlayer: false,
                 petIsTravelStock: true,
                 petSharesMasterLord: false));

@@ -187,6 +187,43 @@ namespace LeadYourPet.Tests
                 isProtectedLeashedMouseEgg: true,
                 driverTypeName: driverTypeName));
         }
+        [Theory]
+        [InlineData("RimTalk_PickUpToddler")]
+        [InlineData("RimTalk_BeingCarried_Struggle")]
+        [InlineData("PlayCrib")]
+        [InlineData("CYB_WashBaby")]
+        public void RecognizesExternalToddlerHoldJobsEvenBeforeLeashProtection(string jobDefName)
+        {
+            Assert.True(LeadYourPetRules.IsExternalToddlerHoldJob(jobDefName));
+            Assert.False(LeadYourPetRules.ShouldBlockExternalToddlerPickup(false, jobDefName));
+        }
+
+        [Theory]
+        [InlineData("RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_BeingCarried")]
+        [InlineData("RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_PickUpToddler")]
+        [InlineData("Toddlers.JobDriver_BePlayedWith")]
+        public void RecognizesExternalToddlerHoldDrivers(string driverTypeName)
+        {
+            Assert.True(LeadYourPetRules.IsExternalToddlerHoldDriver(driverTypeName));
+        }
+
+        [Fact]
+        public void PreservesMapExitFromJobDutyOrLordToil()
+        {
+            Assert.True(LeadYourPetRules.ShouldPreserveMapExitJob(true, false, false));
+            Assert.True(LeadYourPetRules.ShouldPreserveMapExitJob(false, true, false));
+            Assert.True(LeadYourPetRules.ShouldPreserveMapExitJob(false, false, true));
+            Assert.False(LeadYourPetRules.ShouldPreserveMapExitJob(false, false, false));
+        }
+
+        [Fact]
+        public void SuppressesAutomaticInteractionsForSharedTravelLord()
+        {
+            Assert.True(LeadYourPetRules.ShouldSuppressTravelAutoInteraction(false, true, true));
+            Assert.False(LeadYourPetRules.ShouldSuppressTravelAutoInteraction(false, true, false));
+            Assert.False(LeadYourPetRules.ShouldSuppressTravelAutoInteraction(true, true, true));
+        }
+
 
         [Fact]
         public void AllowsRimTalkDialogueForProtectedLeashedMouseEgg()

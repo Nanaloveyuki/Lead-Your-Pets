@@ -306,6 +306,38 @@ namespace LeadYourPet
                 || jobDefName == "CYB_WashBaby";
         }
 
+        public static bool IsExternalToddlerHoldJob(string jobDefName)
+        {
+            return ShouldBlockExternalToddlerPickup(true, jobDefName);
+        }
+
+        public static bool IsExternalToddlerHoldDriver(string driverTypeName)
+        {
+            if (string.IsNullOrEmpty(driverTypeName))
+            {
+                return false;
+            }
+
+            return driverTypeName == "RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_BeingCarried"
+                || driverTypeName == "RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_BeingCarried_Idle"
+                || driverTypeName == "RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_BeingCarried_Observe"
+                || driverTypeName == "RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_BeingCarried_Sleep"
+                || driverTypeName == "RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_BeingCarried_DiaperChange"
+                || driverTypeName == "RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_BeingCarried_Struggle"
+                || driverTypeName == "RimTalk_ToddlersExpansion.Integration.Toddlers.JobDriver_PickUpToddler"
+                || ShouldEndExternalToddlerHoldJob(true, driverTypeName);
+        }
+
+        public static bool ShouldPreserveMapExitJob(bool currentJobExitsMap, bool currentDutyExitsMap, bool lordToilExitsMap)
+        {
+            return currentJobExitsMap || currentDutyExitsMap || lordToilExitsMap;
+        }
+
+        public static bool ShouldSuppressTravelAutoInteraction(bool masterIsPlayer, bool petIsTravelStock, bool petSharesMasterLord)
+        {
+            return !masterIsPlayer && petIsTravelStock && petSharesMasterLord;
+        }
+
         public static bool ShouldEndExternalToddlerHoldJob(bool isProtectedLeashedMouseEgg, string driverTypeName)
         {
             if (!isProtectedLeashedMouseEgg || string.IsNullOrEmpty(driverTypeName))
@@ -325,7 +357,7 @@ namespace LeadYourPet
 
         public static bool ShouldReleaseNonPlayerTravelLeashOnMasterExit(bool masterIsPlayer, bool petIsTravelStock, bool petSharesMasterLord)
         {
-            return !masterIsPlayer && petIsTravelStock && petSharesMasterLord;
+            return !masterIsPlayer && petIsTravelStock;
         }
 
         public static bool ShouldBlockExternalDialogue(bool isProtectedLeashedMouseEgg, string integrationName)

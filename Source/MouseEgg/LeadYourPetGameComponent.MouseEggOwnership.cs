@@ -138,6 +138,7 @@ namespace LeadYourPet
 
         private void TryDropCarriedPawnAfterBecomingMouseEggPet(Pawn pawn)
         {
+            ReleaseExternalToddlerHold(pawn);
             Pawn carrier = pawn?.CarriedBy;
             Pawn_CarryTracker carryTracker = carrier?.carryTracker;
             EndExternalToddlerHoldJobs(pawn, carrier);
@@ -151,6 +152,25 @@ namespace LeadYourPet
             }
 
             carryTracker.TryDropCarriedThing(carrier.Position, ThingPlaceMode.Near, out Thing _);
+        }
+
+        private void ReleaseExternalToddlerHold(Pawn pawn)
+        {
+            if (pawn?.jobs == null)
+            {
+                return;
+            }
+
+            if (!LeadYourPetUtility.IsExternalToddlerHold(pawn.CurJobDef?.defName, pawn.jobs.curDriver?.GetType().FullName))
+            {
+                return;
+            }
+
+            LeadYourPetUtility.TryDismountExternalToddlerHold(pawn);
+            if (LeadYourPetUtility.IsExternalToddlerHold(pawn.CurJobDef?.defName, pawn.jobs.curDriver?.GetType().FullName))
+            {
+                pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, true, true);
+            }
         }
 
         private void EndExternalToddlerHoldJobs(Pawn pawn, Pawn carrier)

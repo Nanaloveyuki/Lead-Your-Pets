@@ -34,6 +34,8 @@ namespace LeadYourPet
         private static readonly Type RimTalkCacheType = AccessTools.TypeByName("RimTalk.Data.Cache");
         private static readonly MethodInfo RimTalkIsTalkEligibleMethod = RimTalkPawnUtilType == null ? null : AccessTools.Method(RimTalkPawnUtilType, "IsTalkEligible", new[] { typeof(Pawn) });
         private static readonly MethodInfo RimTalkGetPlayerMethod = RimTalkCacheType == null ? null : AccessTools.Method(RimTalkCacheType, "GetPlayer");
+        private static readonly Type RimTalkToddlerCarryingUtilityType = AccessTools.TypeByName("RimTalk_ToddlersExpansion.Integration.Toddlers.ToddlerCarryingUtility");
+        private static readonly MethodInfo RimTalkDismountToddlerMethod = OptionalModApi.Resolve(RimTalkToddlerCarryingUtilityType, "DismountToddler", typeof(Pawn));
 
         public static readonly List<LeadYourPetInteractionKind> AutomaticPositiveInteractions = new List<LeadYourPetInteractionKind>
         {
@@ -393,6 +395,45 @@ namespace LeadYourPet
             return LeadYourPetRules.ShouldEndExternalToddlerHoldJob(
                 IsProtectedLeashedMouseEgg(protectedPawn),
                 jobPawn.jobs?.curDriver?.GetType().FullName);
+        }
+
+        public static bool IsExternalToddlerHold(string jobDefName, string driverTypeName)
+        {
+            return LeadYourPetRules.IsExternalToddlerHoldJob(jobDefName)
+                || LeadYourPetRules.IsExternalToddlerHoldDriver(driverTypeName);
+        }
+
+        public static bool ShouldPreserveMapExitMovement(Pawn pawn)
+        {
+            if (pawn == null)
+            {
+                return false;
+            }
+
+            string dutyName = pawn.mindState?.duty?.def?.defName;
+            string lordToilName = pawn.GetLord()?.CurLordToil?.GetType().Name;
+            return LeadYourPetRules.ShouldPreserveMapExitJob(
+                currentJobExitsMap: pawn.CurJob != null && pawn.CurJob.exitMapOnArrival,
+                currentDutyExitsMap: !string.IsNullOrEmpty(dutyName) && dutyName.StartsWith("ExitMap", System.StringComparison.Ordinal),
+                lordToilExitsMap: !string.IsNullOrEmpty(lordToilName) && lordToilName.StartsWith("LordToil_ExitMap", System.StringComparison.Ordinal));
+        }
+
+        public static bool TryDismountExternalToddlerHold(Pawn pawn)
+        {
+            if (pawn == null || RimTalkDismountToddlerMethod == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                return OptionalModApi.Invoke(RimTalkDismountToddlerMethod, pawn) as bool? == true;
+            }
+            catch (System.Exception exception)
+            {
+                Log.Warning("[LeadYourPet] Failed to dismount RimTalk toddler hold.\n" + exception);
+                return false;
+            }
         }
 
         public static bool ShouldBlockExternalDialogue(Pawn target, string integrationName)

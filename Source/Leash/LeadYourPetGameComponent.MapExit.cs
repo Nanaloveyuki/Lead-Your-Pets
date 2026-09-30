@@ -91,9 +91,8 @@ namespace LeadYourPet
                     continue;
                 }
 
-                DetachPetFromMasterLord(link);
+                ReleaseExternalToddlerHold(link.Pet);
                 EndLink(link, false);
-                ClearTravelStock(link.Pet);
             }
         }
 
@@ -135,6 +134,7 @@ namespace LeadYourPet
 
         private bool TryMakeLeashedPawnLeaveMap(Pawn pawn, Map map, Rot4 exitDir)
         {
+            ReleaseExternalToddlerHold(pawn);
             if (pawn == null
                 || map == null
                 || !pawn.Spawned
@@ -143,6 +143,7 @@ namespace LeadYourPet
                 || pawn.Downed
                 || pawn.InMentalState
                 || pawn.CarriedBy != null
+                || LeadYourPetUtility.IsExternalToddlerHold(pawn.CurJobDef?.defName, pawn.jobs?.curDriver?.GetType().FullName)
                 || !map.CanEverExit
                 || LifeStageUtility.AlwaysDowned(pawn)
                 || pawn.health?.capacities == null

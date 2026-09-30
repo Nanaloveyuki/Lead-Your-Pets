@@ -169,6 +169,27 @@ namespace LeadYourPet
             activeAnimations.RemoveAll(x => x == null || x.Master == null || x.Pet == null || x.Master == master || x.Pet == pet || x.Master == pet || x.Pet == master);
             activeAnimations.Add(anim);
         }
+        private void StopInteractionAnimation(Pawn pet)
+        {
+            if (pet == null)
+            {
+                return;
+            }
+
+            for (int i = activeAnimations.Count - 1; i >= 0; i--)
+            {
+                MouseEggInteractionAnimation anim = activeAnimations[i];
+                if (anim?.Pet != pet)
+                {
+                    continue;
+                }
+
+                FinalizeInteractionAnimation(anim);
+                YayoAnimationCompat.Clear(pet);
+                activeAnimations.RemoveAt(i);
+            }
+        }
+
 
         private bool TryBuildInteractionAnimation(Pawn master, Pawn pet, LeadYourPetInteractionKind kind, out MouseEggInteractionAnimation anim)
         {

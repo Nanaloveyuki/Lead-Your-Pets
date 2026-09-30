@@ -4,6 +4,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.AI.Group;
 
 namespace LeadYourPet
 {
@@ -70,6 +71,7 @@ namespace LeadYourPet
             }
 
             ValidateAnchor(link);
+            ReleaseExternalToddlerHold(link.Pet);
             if (ticksGame - link.LastMoodRefreshTick >= 180)
             {
                 link.LastMoodRefreshTick = ticksGame;
@@ -78,8 +80,15 @@ namespace LeadYourPet
 
             if (HasBlockingInteractionAnimation(link.Pet))
             {
-                link.Pet.pather?.StopDead();
-                return;
+                if (LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet))
+                {
+                    StopInteractionAnimation(link.Pet);
+                }
+                else
+                {
+                    link.Pet.pather?.StopDead();
+                    return;
+                }
             }
 
             bool sleepingMaster = HandleSleepingMaster(link);
@@ -119,18 +128,19 @@ namespace LeadYourPet
             }
 
             float distance = targetCell.DistanceTo(link.Pet.Position);
-            if (distance > LeadYourPetUtility.HardLeashLength)
+            bool preserveMapExit = LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet);
+            if (!preserveMapExit && distance > LeadYourPetUtility.HardLeashLength)
             {
                 TightPullBack(link, targetCell);
                 distance = targetCell.DistanceTo(link.Pet.Position);
             }
 
-            if ((link.Kind == LeashLinkKind.MouseEggPet || link.Kind == LeashLinkKind.RatkinMotherBaby) && !LeadYourPetUtility.CanMouseEggMove(link.Pet) && draggingNow)
+            if (!preserveMapExit && (link.Kind == LeashLinkKind.MouseEggPet || link.Kind == LeashLinkKind.RatkinMotherBaby) && !LeadYourPetUtility.CanMouseEggMove(link.Pet) && draggingNow)
             {
                 PullImmobileMouseEgg(link, targetCell);
             }
 
-            if (distance > LeadYourPetUtility.MaxLeashLength || draggingNow)
+            if (!preserveMapExit && (distance > LeadYourPetUtility.MaxLeashLength || draggingNow))
             {
                 if (runExpensiveUpdate)
                 {
@@ -138,7 +148,7 @@ namespace LeadYourPet
                 }
             }
 
-            if (!sleepingMaster && (distance > LeadYourPetUtility.FollowThreshold || draggingNow || ShouldTargetMovementRefresh(link)))
+            if (!preserveMapExit && !sleepingMaster && (distance > LeadYourPetUtility.FollowThreshold || draggingNow || ShouldTargetMovementRefresh(link)))
             {
                 if (runExpensiveUpdate)
                 {
@@ -147,7 +157,8 @@ namespace LeadYourPet
                 }
             }
 
-            if (link.Kind == LeashLinkKind.MouseEggPet
+            if (!preserveMapExit
+                && link.Kind == LeashLinkKind.MouseEggPet
                 && link.MouseEggDutyState != LeashedMouseEggDutyState.FollowMaster
                 && !draggingNow
                 && distance <= LeadYourPetUtility.MaxLeashLength)
@@ -184,10 +195,10 @@ namespace LeadYourPet
         {
             bool playerControlled = link.Master.Faction == Faction.OfPlayer;
             bool canUseSingleDirection = LeadYourPetUtility.CanUseSingleDirectionInteractions(link.Master, link.Pet);
-            if (ticksGame >= link.NextAutoInteractionTick && distance <= 5.9f && !draggingNow)
+            if (ticksGame >= link.NextAutoInteractionTick && distance <= 5.9f && !draggingNow
+                && !ShouldSuppressTravelAutoInteraction(link)
+                && !LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet))
             {
-                link.NextAutoInteractionTick = ticksGame + NextAutoInteractionDelay(playerControlled);
-                if (playerControlled || Rand.Chance(0.03f))
                 {
                     List<LeadYourPetInteractionKind> pool = GetCachedAutoInteractionPool(link, ticksGame, playerControlled, canUseSingleDirection, sleepingMaster);
                     if (pool.Count > 0)
@@ -317,11 +328,24 @@ namespace LeadYourPet
             if (link.MasterSleepSuspended)
             {
                 link.MasterSleepSuspended = false;
-                TightPullBack(link, link.Master.Position);
+                if (!LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet))
+                {
+                    TightPullBack(link, link.Master.Position);
+                }
             }
 
             return false;
         }
+        private bool ShouldSuppressTravelAutoInteraction(LeashLink link)
+        {
+            MouseEggState state = link?.Kind == LeashLinkKind.MouseEggPet ? GetMouseEggState(link.Pet) : null;
+            Lord masterLord = link?.Master?.GetLord();
+            return LeadYourPetRules.ShouldSuppressTravelAutoInteraction(
+                masterIsPlayer: link?.Master?.Faction == Faction.OfPlayer,
+                petIsTravelStock: state != null && state.IsTravelStock,
+                petSharesMasterLord: masterLord != null && link.Pet.GetLord() == masterLord);
+        }
+
 
         private void ValidateAnchor(LeashLink link)
         {
@@ -498,7 +522,7 @@ namespace LeadYourPet
 
         private void ForceFollow(LeashLink link, int ticksGame, bool forceImmediateUpdate)
         {
-            if (link == null || link.Pet == null)
+            if (link == null || link.Pet == null || LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet))
             {
                 return;
             }
