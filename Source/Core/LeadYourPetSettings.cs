@@ -15,6 +15,7 @@ namespace LeadYourPet
         public int maxMouseEggPetLeashStartDistance = 10;
         public int minPetAgeYears = DefaultMinPetAgeYears;
         public int maxPetAgeYears = DefaultMaxPetAgeYears;
+        public bool ignorePetAge;
         public int ordinaryTravelRatkinYoungCount = DefaultOrdinaryTravelRatkinYoungCount;
         public bool infiniteLeash;
         public bool showInteractionText = true;
@@ -46,6 +47,7 @@ namespace LeadYourPet
             Scribe_Values.Look(ref maxMouseEggPetLeashStartDistance, "maxMouseEggPetLeashStartDistance", 10);
             Scribe_Values.Look(ref minPetAgeYears, "minPetAgeYears", DefaultMinPetAgeYears);
             Scribe_Values.Look(ref maxPetAgeYears, "maxPetAgeYears", DefaultMaxPetAgeYears);
+            Scribe_Values.Look(ref ignorePetAge, "ignorePetAge", false);
             Scribe_Values.Look(ref ordinaryTravelRatkinYoungCount, "ordinaryTravelRatkinYoungCount", DefaultOrdinaryTravelRatkinYoungCount);
             Scribe_Values.Look(ref infiniteLeash, "infiniteLeash", false);
             Scribe_Values.Look(ref showInteractionText, "showInteractionText", true);

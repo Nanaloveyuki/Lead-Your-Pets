@@ -106,4 +106,7 @@
   <LeadYourPet_Feeding_Modded>Mod foods</LeadYourPet_Feeding_Modded>
   <LeadYourPet_Feeding_UnknownMod>Unknown source</LeadYourPet_Feeding_UnknownMod>
   <LeadYourPet_Feeding_NoResults>No matching foods.</LeadYourPet_Feeding_NoResults>
+  <LeadYourPet_Settings_IgnorePetAge>No leash age limit</LeadYourPet_Settings_IgnorePetAge>
+  <LeadYourPet_Settings_IgnorePetAge_Tooltip>Ignore the minimum and maximum leash ages for animals and humanlikes, including adult prisoners. Other leash conditions still apply.</LeadYourPet_Settings_IgnorePetAge_Tooltip>
+  <LeadYourPet_Settings_PetAge_Note>Uses biological age, including the minimum and excluding the maximum. The range below applies when No leash age limit is off. The default is 0 to under 14.</LeadYourPet_Settings_PetAge_Note>
 </LanguageData>

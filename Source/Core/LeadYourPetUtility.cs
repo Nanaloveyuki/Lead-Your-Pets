@@ -142,7 +142,8 @@ namespace LeadYourPet
         {
             return pawn != null
                 && pawn.ageTracker != null
-                && LeadYourPetRules.IsWithinPetAgeRange(pawn.ageTracker.AgeBiologicalYearsFloat, MinPetAgeYears, MaxPetAgeYears);
+                && (LeadYourPetMod.Settings != null && LeadYourPetMod.Settings.ignorePetAge
+                    || LeadYourPetRules.IsWithinPetAgeRange(pawn.ageTracker.AgeBiologicalYearsFloat, MinPetAgeYears, MaxPetAgeYears));
         }
 
         public static bool IsMouseEgg(Pawn pawn)

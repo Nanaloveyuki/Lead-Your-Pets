@@ -106,4 +106,7 @@
   <LeadYourPet_Feeding_Modded>模组食物</LeadYourPet_Feeding_Modded>
   <LeadYourPet_Feeding_UnknownMod>未知来源</LeadYourPet_Feeding_UnknownMod>
   <LeadYourPet_Feeding_NoResults>没有匹配的食物。</LeadYourPet_Feeding_NoResults>
+  <LeadYourPet_Settings_IgnorePetAge>不限制牵引年龄</LeadYourPet_Settings_IgnorePetAge>
+  <LeadYourPet_Settings_IgnorePetAge_Tooltip>开启后忽略动物和智人的牵引年龄上下限，可牵引成年囚犯。其他牵引条件仍然有效。</LeadYourPet_Settings_IgnorePetAge_Tooltip>
+  <LeadYourPet_Settings_PetAge_Note>按生物年龄判断，下限包含、上限不包含。关闭「不限制牵引年龄」后使用下面的范围；默认 0 至未满 14 岁。</LeadYourPet_Settings_PetAge_Note>
 </LanguageData>

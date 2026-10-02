@@ -349,6 +349,10 @@ namespace LeadYourPet
             }
 
             IrisMenusCompat.Section(list, "LeadYourPet_Menu_Age".Translate());
+            IrisMenusCompat.Anchor(list, "ignore-age");
+            IrisMenusCompat.Checkbox(list, "LeadYourPet_Settings_IgnorePetAge".Translate(), ref settings.ignorePetAge,
+                "LeadYourPet_Settings_IgnorePetAge_Tooltip".Translate());
+            list.Label("LeadYourPet_Settings_PetAge_Note".Translate());
             IrisMenusCompat.Anchor(list, "min-age", 34f);
             if (minAgeBuffer.Length == 0)
             {
@@ -440,6 +444,8 @@ namespace LeadYourPet
 
         IEnumerable<object> SearchAge()
         {
+            yield return IrisMenusCompat.Entry("ignore-age", "LeadYourPet_Settings_IgnorePetAge", "adult prisoner age limit 成年 囚犯 年龄",
+                "LeadYourPet_Settings_IgnorePetAge_Tooltip");
             yield return IrisMenusCompat.Entry("min-age", "LeadYourPet_Settings_MinPetAge", "minimum age years",
                 "LeadYourPet_Settings_MinPetAge_Tooltip");
             yield return IrisMenusCompat.Entry("max-age", "LeadYourPet_Settings_MaxPetAge", "maximum age years",

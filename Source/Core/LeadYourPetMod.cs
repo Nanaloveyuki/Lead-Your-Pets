@@ -42,6 +42,10 @@ namespace LeadYourPet
             listing.CheckboxLabeled("LeadYourPet_Settings_VisitorsLeadRatkinYoung".Translate(), ref visitorsLeadRatkinYoung, "LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip".Translate());
             Settings.visitorsLeadRatkinYoung = visitorsLeadRatkinYoung;
 
+            listing.CheckboxLabeled("LeadYourPet_Settings_IgnorePetAge".Translate(), ref Settings.ignorePetAge,
+                "LeadYourPet_Settings_IgnorePetAge_Tooltip".Translate());
+            listing.Label("LeadYourPet_Settings_PetAge_Note".Translate());
+
             listing.Label("LeadYourPet_Settings_MinPetAge".Translate(Settings.minPetAgeYears));
             Settings.minPetAgeYears = Mathf.RoundToInt(listing.Slider(Settings.minPetAgeYears, 0f, LeadYourPetSettings.AbsoluteMaxPetAgeYears));
             if (Settings.maxPetAgeYears < Settings.minPetAgeYears)
