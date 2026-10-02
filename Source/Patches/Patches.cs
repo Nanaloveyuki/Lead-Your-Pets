@@ -541,7 +541,7 @@ namespace LeadYourPet
                 return;
             }
 
-            if (__result <= 0f || !component.AnyMouseEggPetFor(ingester))
+            if (__result <= 0f || !LeadYourPetFeedFood.Allows(__instance.def) || !component.AnyMouseEggPetFor(ingester))
             {
                 return;
             }

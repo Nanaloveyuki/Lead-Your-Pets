@@ -89,6 +89,11 @@ namespace LeadYourPet
                 Settings.leashedPawnMapExitBehavior = LeashedPawnMapExitBehavior.Disappear;
             }
 
+            if (listing.ButtonText("LeadYourPet_Menu_Feeding".Translate()))
+            {
+                Find.WindowStack.Add(new Dialog_LeadYourPetFeeding());
+            }
+
             listing.End();
             Settings.Write();
         }

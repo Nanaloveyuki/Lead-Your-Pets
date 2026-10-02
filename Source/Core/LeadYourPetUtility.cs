@@ -1329,8 +1329,7 @@ namespace LeadYourPet
                 return true;
             }
 
-            ThingDef foodDef;
-            Thing mapFood = FoodUtility.BestFoodSourceOnMap(feeder, pet, desperate: false, out foodDef, FoodPreferability.MealLavish, allowPlant: true, allowDrug: false, allowCorpse: false, allowDispenserFull: false, allowDispenserEmpty: false, allowForbidden: false, allowSociallyImproper: false, allowHarvest: false, forceScanWholeMap: true, ignoreReservations: true, calculateWantedStackCount: false, minPrefOverride: FoodPreferability.NeverForNutrition, minNutrition: null, allowVenerated: false);
+            Thing mapFood = FindAllowedFeedFoodOnMap(feeder, pet);
             if (CanUseManualFeedFood(feeder, pet, mapFood))
             {
                 foodSource = mapFood;
@@ -1339,6 +1338,26 @@ namespace LeadYourPet
 
             failReason = "LeadYourPet_Reason_NoSuitableFood";
             return false;
+        }
+
+        private static Thing FindAllowedFeedFoodOnMap(Pawn feeder, Pawn pet)
+        {
+            Thing best = null;
+            float bestScore = float.MinValue;
+            List<Thing> candidates = feeder.Map.listerThings.ThingsInGroup(ThingRequestGroup.FoodSource);
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                Thing food = candidates[i];
+                if (!food.Spawned || !CanUseManualFeedFood(feeder, pet, food)
+                    || food.IsForbidden(feeder) || food.IsNotFresh() || food.IsDessicated()
+                    || (!food.IsSociallyProper(feeder) && !food.IsSociallyProper(pet, pet.IsPrisonerOfColony, !feeder.IsAnimal))
+                    || (feeder.roping.IsRoped && !food.Position.InHorDistOf(feeder.roping.RopedTo.Cell, 8f))) continue;
+                float score = FoodUtility.FoodOptimality(pet, food, food.def, (feeder.Position - food.Position).LengthHorizontal);
+                if (score < bestScore || !feeder.CanReach(food, PathEndMode.ClosestTouch, Danger.Some)) continue;
+                best = food;
+                bestScore = score;
+            }
+            return best;
         }
 
         public static bool TryFeedTarget(Pawn feeder, Pawn pet, out string failReason, out LeadYourPetInteractionKind interactionKind)
@@ -1598,7 +1617,7 @@ namespace LeadYourPet
         private static bool CanUseManualFeedFood(Pawn feeder, Pawn pet, Thing food)
         {
             return food != null
-                && food.def.IsNutritionGivingIngestible
+                && LeadYourPetFeedFood.Allows(food.def)
                 && food.IngestibleNow
                 && !food.def.IsDrug
                 && pet.WillEat(food, feeder)

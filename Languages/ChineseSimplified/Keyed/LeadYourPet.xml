@@ -95,4 +95,15 @@
   <LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip>关闭后，普通来客和商队不再带着生成的鼠蛋到来。鼠灾队伍仍会带着自己的孩子。</LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip>
   <LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount>每支来客队伍的鼠蛋数量：{0}</LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount>
   <LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount_Tooltip>普通来客或商队尝试牵着的鼠蛋数量。0 表示不带。默认是 2。</LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount_Tooltip>
+  <LeadYourPet_Menu_Feeding>主人喂食</LeadYourPet_Menu_Feeding>
+  <LeadYourPet_Feeding_Note>勾选主人可用来喂食和分享的食物。默认只允许原版及官方扩展的食物。目标的饮食限制仍然有效；药物和尸体不用于喂食。</LeadYourPet_Feeding_Note>
+  <LeadYourPet_Feeding_Search>搜索食物名称或模组</LeadYourPet_Feeding_Search>
+  <LeadYourPet_Feeding_Grouping>分类方式</LeadYourPet_Feeding_Grouping>
+  <LeadYourPet_Feeding_Group_Mod>按 Mod 分</LeadYourPet_Feeding_Group_Mod>
+  <LeadYourPet_Feeding_Group_Alphabet>按 A–Z 分（内部名称）</LeadYourPet_Feeding_Group_Alphabet>
+  <LeadYourPet_Feeding_Group_Vanilla>按原版分</LeadYourPet_Feeding_Group_Vanilla>
+  <LeadYourPet_Feeding_Vanilla>原版及官方扩展</LeadYourPet_Feeding_Vanilla>
+  <LeadYourPet_Feeding_Modded>模组食物</LeadYourPet_Feeding_Modded>
+  <LeadYourPet_Feeding_UnknownMod>未知来源</LeadYourPet_Feeding_UnknownMod>
+  <LeadYourPet_Feeding_NoResults>没有匹配的食物。</LeadYourPet_Feeding_NoResults>
 </LanguageData>

@@ -21,6 +21,8 @@ namespace LeadYourPet
         static MethodInfo number;
         static MethodInfo select;
         static ConstructorInfo searchEntry;
+        static MethodInfo registerSubItem;
+        static Type scrollType;
 
         internal static void TryRegister(LeadYourPetMod owner)
         {
@@ -87,12 +89,14 @@ namespace LeadYourPet
             Type registry = TypeByName("IrisMenus.MenuRegistry");
             Type controls = TypeByName("IrisMenus.MenuControls");
             Type entry = TypeByName("IrisMenus.MenuSearchEntry");
+            scrollType = TypeByName("IrisMenus.MenuScrollView");
             if (registry == null || controls == null || entry == null)
             {
                 return false;
             }
 
             registerPage = OptionalModApi.Resolve(registry, "RegisterSubItemListing", typeof(Mod), typeof(string), typeof(Func<string>), typeof(Action<Listing_Standard>));
+            registerSubItem = OptionalModApi.Resolve(registry, "RegisterSubItem", typeof(Mod), typeof(string), typeof(Func<string>), typeof(Action<UnityEngine.Rect>));
             registerSearch = registry.GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .FirstOrDefault(method =>
                 {
@@ -131,7 +135,7 @@ namespace LeadYourPet
             select = controls.GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .FirstOrDefault(method => method.Name == "Select" && method.IsGenericMethodDefinition);
             searchEntry = entry.GetConstructor(new[] { typeof(string), typeof(Func<string>), typeof(Func<string>), typeof(Func<string>) });
-            return registerPage != null && registerSearch != null && searchResult != null && anchor != null &&
+            return registerPage != null && registerSubItem != null && scrollType != null && registerSearch != null && searchResult != null && anchor != null &&
                 section != null && checkbox != null && number != null && select != null && searchEntry != null;
         }
 
@@ -139,6 +143,33 @@ namespace LeadYourPet
         {
             OptionalModApi.Invoke(registerPage, owner, pageId, (Func<string>)(() => titleKey.Translate()), draw);
             OptionalModApi.Invoke(registerSearch, owner, pageId, BindSearch(searchResult, search));
+        }
+
+        internal static void RegisterFeedingPage(Mod owner)
+        {
+            var page = new LeadYourPetFeedingPage();
+            object scroll = Activator.CreateInstance(scrollType);
+            MethodInfo draw = scrollType.GetMethod("Draw");
+            MethodInfo focus = scrollType.GetMethod("Focus");
+            Action<UnityEngine.Rect> render = rect => draw.Invoke(scroll, new object[] { rect, (Action<Listing_Standard>)(list => page.Draw(list, true)) });
+            OptionalModApi.Invoke(registerSubItem, owner, "feeding", (Func<string>)(() => "LeadYourPet_Menu_Feeding".Translate()), render);
+            Action<string> reveal = id =>
+            {
+                page.ClearSearch();
+                focus.Invoke(scroll, new object[] { id });
+            };
+            OptionalModApi.Invoke(registerSearch, owner, "feeding", BindSearch(searchResult, page.SearchEntries), reveal);
+        }
+
+        internal static object FoodEntry(ThingDef food)
+        {
+            return searchEntry.Invoke(new object[]
+            {
+                "food-" + food.defName,
+                (Func<string>)(() => food.LabelCap),
+                (Func<string>)(() => food.defName + " " + food.modContentPack?.PackageId),
+                (Func<string>)(() => food.modContentPack?.Name ?? string.Empty)
+            });
         }
 
         internal static Delegate BindSearch(Type sequence, Func<IEnumerable<object>> search)
@@ -249,6 +280,7 @@ namespace LeadYourPet
             IrisMenusCompat.RegisterPage(owner, "age", "LeadYourPet_Menu_Age", DrawAge, SearchAge);
             IrisMenusCompat.RegisterPage(owner, "visitors", "LeadYourPet_Menu_Visitors", DrawVisitors, SearchVisitors);
             IrisMenusCompat.RegisterPage(owner, "map-exit", "LeadYourPet_Menu_MapExit", DrawMapExit, SearchMapExit);
+            IrisMenusCompat.RegisterFeedingPage(owner);
         }
 
         void DrawLeash(Listing_Standard list)

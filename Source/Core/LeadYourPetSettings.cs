@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Verse;
 
 namespace LeadYourPet
@@ -21,6 +22,23 @@ namespace LeadYourPet
         public bool allowRatkinYoungPets = true;
         public bool visitorsLeadRatkinYoung = true;
         public LeashedPawnMapExitBehavior leashedPawnMapExitBehavior = LeashedPawnMapExitBehavior.StayInPlace;
+        private HashSet<string> enabledModFeedFoods = new HashSet<string>();
+        private HashSet<string> disabledVanillaFeedFoods = new HashSet<string>();
+
+        internal bool AllowsFeedFood(ThingDef food)
+        {
+            if (!LeadYourPetFeedFood.IsUsable(food)) return false;
+            return LeadYourPetFeedFood.IsVanilla(food)
+                ? !disabledVanillaFeedFoods.Contains(food.defName)
+                : enabledModFeedFoods.Contains(food.defName);
+        }
+
+        internal void SetFeedFoodAllowed(ThingDef food, bool allowed)
+        {
+            HashSet<string> overrides = LeadYourPetFeedFood.IsVanilla(food) ? disabledVanillaFeedFoods : enabledModFeedFoods;
+            if (allowed != LeadYourPetFeedFood.IsVanilla(food)) overrides.Add(food.defName);
+            else overrides.Remove(food.defName);
+        }
 
         public override void ExposeData()
         {
@@ -35,6 +53,10 @@ namespace LeadYourPet
             Scribe_Values.Look(ref allowRatkinYoungPets, "allowRatkinYoungPets", true);
             Scribe_Values.Look(ref visitorsLeadRatkinYoung, "visitorsLeadRatkinYoung", true);
             Scribe_Values.Look(ref leashedPawnMapExitBehavior, "leashedPawnMapExitBehavior", LeashedPawnMapExitBehavior.StayInPlace);
+            Scribe_Collections.Look(ref enabledModFeedFoods, "enabledModFeedFoods", LookMode.Value);
+            Scribe_Collections.Look(ref disabledVanillaFeedFoods, "disabledVanillaFeedFoods", LookMode.Value);
+            if (enabledModFeedFoods == null) enabledModFeedFoods = new HashSet<string>();
+            if (disabledVanillaFeedFoods == null) disabledVanillaFeedFoods = new HashSet<string>();
             Clamp();
         }
 

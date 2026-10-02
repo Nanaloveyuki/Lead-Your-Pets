@@ -95,4 +95,15 @@
   <LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip>Turn off and ordinary visitors and traders stop arriving with generated young ratkin. Mouse Disaster caravans still bring their own.</LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip>
   <LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount>Young ratkin per visiting group: {0}</LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount>
   <LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount_Tooltip>How many young ratkin an ordinary visitor or trader group tries to lead. 0 means none. The default is 2.</LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount_Tooltip>
+  <LeadYourPet_Menu_Feeding>Owner feeding</LeadYourPet_Menu_Feeding>
+  <LeadYourPet_Feeding_Note>Select foods the owner can feed or share. Only base-game and official expansion foods are allowed by default. The target's food restrictions still apply; drugs and corpses are not used for feeding.</LeadYourPet_Feeding_Note>
+  <LeadYourPet_Feeding_Search>Search food or mod name</LeadYourPet_Feeding_Search>
+  <LeadYourPet_Feeding_Grouping>Group foods</LeadYourPet_Feeding_Grouping>
+  <LeadYourPet_Feeding_Group_Mod>By mod</LeadYourPet_Feeding_Group_Mod>
+  <LeadYourPet_Feeding_Group_Alphabet>By A–Z (internal name)</LeadYourPet_Feeding_Group_Alphabet>
+  <LeadYourPet_Feeding_Group_Vanilla>By vanilla source</LeadYourPet_Feeding_Group_Vanilla>
+  <LeadYourPet_Feeding_Vanilla>Base game and official expansions</LeadYourPet_Feeding_Vanilla>
+  <LeadYourPet_Feeding_Modded>Mod foods</LeadYourPet_Feeding_Modded>
+  <LeadYourPet_Feeding_UnknownMod>Unknown source</LeadYourPet_Feeding_UnknownMod>
+  <LeadYourPet_Feeding_NoResults>No matching foods.</LeadYourPet_Feeding_NoResults>
 </LanguageData>
