@@ -3,6 +3,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using Verse.AI.Group;
 
 namespace LeadYourPet
@@ -105,6 +106,7 @@ namespace LeadYourPet
             }
 
             EndLeashForPet(pet, false);
+            ReleaseIncomingLeashCycle(master, pet);
 
             LeashLink link = new LeashLink
             {
@@ -184,15 +186,37 @@ namespace LeadYourPet
                 preservePlayerCaravanLeash: LeadYourPetUtility.IsPlayerCaravanMaster(master));
         }
 
+        private void ReleaseIncomingLeashCycle(Pawn master, Pawn pet)
+        {
+            Pawn ancestor = master;
+            for (int i = 0; ancestor != null && i <= links.Count; i++)
+            {
+                if (ancestor == pet)
+                {
+                    // The new direction wins; keep ordinary chains and other pets intact.
+                    EndLeashForPet(master, false);
+                    return;
+                }
+
+                ancestor = GetLinkForPet(ancestor)?.Master;
+            }
+        }
+
         private void EndLink(LeashLink link, bool showMessage)
         {
             links.Remove(link);
             UnregisterLink(link);
+            StopInteractionAnimation(link.Pet, finalizeTeleport: false);
+            if (IsRunningFollowMasterJob(link))
+            {
+                link.Pet.pather?.StopDead();
+                link.Pet.jobs?.EndCurrentJob(JobCondition.InterruptForced, false);
+            }
             LeadYourPetUtility.ClearLeashMood(link.Master, link.Pet);
             MaintainDraggedSlow(link.Pet, false);
             link.CachedHasValidAutoInteractionPool = false;
 
-            if (link.Kind == LeashLinkKind.MouseEggPet)
+            if (link.Kind == LeashLinkKind.MouseEggPet || link.Kind == LeashLinkKind.RatkinMotherBaby)
             {
                 MouseEggState state = GetMouseEggState(link.Pet);
                 if (state != null && state.CurrentMaster == link.Master)
@@ -203,10 +227,7 @@ namespace LeadYourPet
                     }
 
                     state.CurrentMaster = null;
-                    if (!state.IsTravelStock)
-                    {
-                        state.IsPet = false;
-                    }
+                    state.IsPet = false;
                 }
             }
 

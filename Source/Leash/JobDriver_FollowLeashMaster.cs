@@ -39,6 +39,14 @@ namespace LeadYourPet
                     return;
                 }
 
+                if (GodHandsCompat.IsGrabbed(pawn) || GodHandsCompat.IsGrabbed(master)
+                    || LeadYourPetUtility.ShouldPreserveMapExitMovement(pawn)
+                    || LeadYourPetUtility.ShouldPreserveMapExitMovement(master))
+                {
+                    pawn.pather.StopDead();
+                    return;
+                }
+
                 if (!pawn.CanReach(master, PathEndMode.Touch, Danger.Deadly))
                 {
                     EndJobWith(JobCondition.Incompletable);

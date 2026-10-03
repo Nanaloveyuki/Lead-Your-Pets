@@ -12,10 +12,56 @@ namespace LeadYourPet
     {
         internal int LinkCount => links.Count;
 
+        internal void ResumeAfterExternalGrab(Pawn pawn)
+        {
+            bool relevant = LeadYourPetUtility.IsUnprotectedTravelStock(pawn)
+                && LeadYourPetUtility.IsNonPlayerTravelDeparture(pawn);
+            for (int i = 0; i < links.Count; i++)
+            {
+                LeashLink link = links[i];
+                if (ReferenceEquals(link.Pet, pawn) || ReferenceEquals(link.Master, pawn)
+                    || ReferenceEquals(link.AnchorThing, pawn))
+                {
+                    link.ForceImmediateUpdate = true;
+                    relevant = true;
+                }
+            }
+
+            // ForceReleaseGrab clears ownership but does not end GodHands' long Wait job.
+            if (relevant && pawn.CurJob?.def?.defName == "Wait" && pawn.CurJob.expiryInterval == 99999
+                && pawn.Spawned && !pawn.Dead)
+            {
+                pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
+            }
+        }
+
         private void ProcessLink(LeashLink link, int ticksGame)
         {
-            if (link == null || link.Master == null || link.Pet == null)
+            if (link == null || link.Master == null || link.Pet == null || GetLinkForPet(link.Pet) != link)
             {
+                return;
+            }
+            if (LeadYourPetUtility.IsNonPlayerTravelDeparture(link.Pet)
+                || LeadYourPetUtility.IsNonPlayerTravelDeparture(link.Master))
+            {
+                PrepareTravelDeparture(link.Pet.GetLord() ?? link.Master.GetLord());
+                if (GetLinkForPet(link.Pet) != link)
+                {
+                    return;
+                }
+            }
+
+            if (GodHandsCompat.IsGrabbed(link.Pet) || GodHandsCompat.IsGrabbed(link.Master)
+                || (LeadYourPetUtility.GetCurrentFollowThing(link) is Pawn grabbedAnchor && GodHandsCompat.IsGrabbed(grabbedAnchor)))
+            {
+                StopInteractionAnimation(link.Pet, finalizeTeleport: false);
+                if (!GodHandsCompat.IsGrabbed(link.Pet))
+                {
+                    link.Pet.pather?.StopDead();
+                }
+                link.IsDragging = false;
+                MaintainDraggedSlow(link.Pet, false);
+                link.ForceImmediateUpdate = true;
                 return;
             }
 
@@ -82,7 +128,7 @@ namespace LeadYourPet
             {
                 if (LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet))
                 {
-                    StopInteractionAnimation(link.Pet);
+                    StopInteractionAnimation(link.Pet, finalizeTeleport: false);
                 }
                 else
                 {
@@ -195,17 +241,17 @@ namespace LeadYourPet
         {
             bool playerControlled = link.Master.Faction == Faction.OfPlayer;
             bool canUseSingleDirection = LeadYourPetUtility.CanUseSingleDirectionInteractions(link.Master, link.Pet);
-            if (ticksGame >= link.NextAutoInteractionTick && distance <= 5.9f && !draggingNow
+            bool canAutoInteract = !sleepingMaster && !link.Master.Drafted && link.Master.pather?.Moving != true;
+            if (canAutoInteract && ticksGame >= link.NextAutoInteractionTick && distance <= 5.9f && !draggingNow
                 && !ShouldSuppressTravelAutoInteraction(link)
                 && !LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet))
             {
+                link.NextAutoInteractionTick = ticksGame + NextAutoInteractionDelay(playerControlled);
+                List<LeadYourPetInteractionKind> pool = GetCachedAutoInteractionPool(link, ticksGame, playerControlled, canUseSingleDirection, sleepingMaster);
+                if (pool.Count > 0)
                 {
-                    List<LeadYourPetInteractionKind> pool = GetCachedAutoInteractionPool(link, ticksGame, playerControlled, canUseSingleDirection, sleepingMaster);
-                    if (pool.Count > 0)
-                    {
-                        LeadYourPetInteractionKind kind = pool.RandomElement();
-                        ApplyInteraction(link.Master, link.Pet, kind, LeadYourPetUtility.IsBidirectionalInteraction(kind));
-                    }
+                    LeadYourPetInteractionKind kind = pool.RandomElement();
+                    ApplyInteraction(link.Master, link.Pet, kind, LeadYourPetUtility.IsBidirectionalInteraction(kind));
                 }
             }
 
@@ -216,7 +262,7 @@ namespace LeadYourPet
                 return;
             }
 
-            if (canUseSingleDirection && ticksGame - link.LastObserveMemoryTick > 1800 && distance <= 4.9f)
+            if (canAutoInteract && canUseSingleDirection && ticksGame - link.LastObserveMemoryTick > 1800 && distance <= 4.9f)
             {
                 int observers = CountNearbyHumanlikeObservers(link.Master, link.Pet, 4f, 2);
                 if (observers >= 2 && LeadYourPetUtility.CanPerformInteraction(link.Pet, LeadYourPetInteractionKind.Observe, out _))
@@ -504,7 +550,9 @@ namespace LeadYourPet
 
         private void TightPullBack(LeashLink link, IntVec3 targetCell)
         {
-            if (link.Pet == null || !link.Pet.Spawned || !targetCell.IsValid || !targetCell.InBounds(link.Pet.Map))
+            if (link.Pet == null || !link.Pet.Spawned || !targetCell.IsValid || !targetCell.InBounds(link.Pet.Map)
+                || GodHandsCompat.IsGrabbed(link.Pet) || GodHandsCompat.IsGrabbed(link.Master)
+                || (LeadYourPetUtility.GetCurrentFollowThing(link) is Pawn anchor && GodHandsCompat.IsGrabbed(anchor)))
             {
                 return;
             }
@@ -522,7 +570,8 @@ namespace LeadYourPet
 
         private void ForceFollow(LeashLink link, int ticksGame, bool forceImmediateUpdate)
         {
-            if (link == null || link.Pet == null || LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet))
+            if (link == null || link.Pet == null || LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet)
+                || GodHandsCompat.IsGrabbed(link.Pet) || GodHandsCompat.IsGrabbed(link.Master))
             {
                 return;
             }
@@ -581,8 +630,8 @@ namespace LeadYourPet
 
         private bool IsRunningFollowMasterJob(LeashLink link)
         {
-            return link?.Pet?.CurJobDef == LeadYourPetDefOf.LeadYourPet_FollowMaster
-                && link.Pet.CurJob != null
+            return link?.Pet?.CurJob != null
+                && link.Pet.CurJobDef == LeadYourPetDefOf.LeadYourPet_FollowMaster
                 && link.Pet.CurJob.targetA.Thing == link.Master;
         }
 
@@ -616,7 +665,9 @@ namespace LeadYourPet
                     continue;
                 }
 
-                if (!link.Pet.Spawned || link.Pet.Map != master.Map)
+                if (!link.Pet.Spawned || link.Pet.Map != master.Map
+                    || LeadYourPetUtility.ShouldPreserveMapExitMovement(link.Pet)
+                    || LeadYourPetUtility.ShouldPreserveMapExitMovement(master))
                 {
                     continue;
                 }
@@ -627,7 +678,8 @@ namespace LeadYourPet
 
         private void PullImmobileMouseEgg(LeashLink link, IntVec3 targetCell)
         {
-            if (link.Pet == null || !link.Pet.Spawned || !targetCell.IsValid)
+            if (link.Pet == null || !link.Pet.Spawned || !targetCell.IsValid
+                || GodHandsCompat.IsGrabbed(link.Pet) || GodHandsCompat.IsGrabbed(link.Master))
             {
                 return;
             }

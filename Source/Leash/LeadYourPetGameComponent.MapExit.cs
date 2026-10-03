@@ -82,7 +82,12 @@ namespace LeadYourPet
                     continue;
                 }
 
-                MouseEggState state = link.Kind == LeashLinkKind.MouseEggPet ? GetMouseEggState(link.Pet) : null;
+                MouseEggState state = GetMouseEggState(link.Pet);
+                if (!LeadYourPetUtility.IsUnprotectedTravelStock(link.Pet))
+                {
+                    continue;
+                }
+
                 if (!LeadYourPetRules.ShouldReleaseNonPlayerTravelLeashOnMasterExit(
                     masterIsPlayer: false,
                     petIsTravelStock: state != null && state.IsTravelStock,
@@ -91,8 +96,13 @@ namespace LeadYourPet
                     continue;
                 }
 
-                ReleaseExternalToddlerHold(link.Pet);
+                StopInteractionAnimation(link.Pet, finalizeTeleport: false);
                 EndLink(link, false);
+                if (state != null)
+                {
+                    state.IsPet = false;
+                    state.CurrentMaster = null;
+                }
             }
         }
 

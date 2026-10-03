@@ -81,64 +81,60 @@ namespace LeadYourPet
             LeashLink current = component.GetLinkForPet(pet);
             bool ownedByActor = (state != null && state.CurrentMaster == actor) || (current != null && current.Master == actor && current.Kind == LeashLinkKind.MouseEggPet);
             bool canBePet = LeadYourPetUtility.CanBePetMouseEgg(pet, out string petBlockReasonKey);
-            bool colonistChild = LeadYourPetUtility.IsColonistMouseEgg(pet);
-            string stopLabel = colonistChild ? "不再看着孩子" : T("LeadYourPet_StopMouseEggLeash");
-            string twoWayLabel = colonistChild ? "陪孩子玩..." : T("LeadYourPet_MouseEggTwoWay");
-            string startLabel = colonistChild ? "看着孩子并牵着" : T("LeadYourPet_SetAsPetMouseEggAndLeash");
 
             if (ownedByActor)
             {
-                yield return new FloatMenuOption(stopLabel, delegate
+                yield return new FloatMenuOption(T("LeadYourPet_StopMouseEggLeash"), delegate
                 {
                     component.ClearMouseEggPetState(pet);
                 }, MenuOptionPriority.Default);
 
                 if (!canBePet)
                 {
-                    yield return colonistChild ? DisabledOptionRaw("不能继续看着孩子", T(petBlockReasonKey)) : DisabledOption("LeadYourPet_MouseEggNoLongerPettable", petBlockReasonKey);
+                    yield return DisabledOption("LeadYourPet_MouseEggNoLongerPettable", petBlockReasonKey);
                     yield break;
                 }
 
                 bool bidirectionalBlocked = LeadYourPetUtility.ShouldBlockColonistBidirectionalInteraction(actor, pet, LeadYourPetUtility.BidirectionalInteractions.First());
                 if (LeadYourPetRules.ShouldOfferManualMouseEggInteractionMenu(ownedByActor, true, bidirectionalBlocked))
                 {
-                    yield return BuildInteractionMenu(twoWayLabel, actor, pet, component, LeadYourPetUtility.BidirectionalInteractions, true);
+                    yield return BuildInteractionMenu("LeadYourPet_MouseEggTwoWay", actor, pet, component, LeadYourPetUtility.BidirectionalInteractions);
                 }
                 yield break;
             }
 
             if (!canBePet)
             {
-                yield return colonistChild ? DisabledOptionRaw(startLabel, T(petBlockReasonKey)) : DisabledOption("LeadYourPet_SetAsPetMouseEggAndLeash", petBlockReasonKey);
+                yield return DisabledOption("LeadYourPet_SetAsPetMouseEggAndLeash", petBlockReasonKey);
                 yield break;
             }
 
             if (!LeadYourPetUtility.CanStartPlayerPetLeash(actor, pet, true, out string leashReasonKey))
             {
-                yield return colonistChild ? DisabledOptionRaw(startLabel, T(leashReasonKey)) : DisabledOption("LeadYourPet_SetAsPetMouseEggAndLeash", leashReasonKey);
+                yield return DisabledOption("LeadYourPet_SetAsPetMouseEggAndLeash", leashReasonKey);
                 yield break;
             }
 
             if (!actor.CanReach(pet, PathEndMode.Touch, Danger.Deadly))
             {
-                yield return colonistChild ? DisabledOptionRaw(startLabel, T("LeadYourPet_Reason_Unreachable")) : DisabledOption("LeadYourPet_SetAsPetMouseEggAndLeash", "LeadYourPet_Reason_Unreachable");
+                yield return DisabledOption("LeadYourPet_SetAsPetMouseEggAndLeash", "LeadYourPet_Reason_Unreachable");
                 yield break;
             }
 
-            yield return new FloatMenuOption(startLabel, delegate
+            yield return new FloatMenuOption(T("LeadYourPet_SetAsPetMouseEggAndLeash"), delegate
             {
                 component.StartLeash(actor, pet, true);
             }, MenuOptionPriority.InitiateSocial);
         }
 
-        private FloatMenuOption BuildInteractionMenu(string label, Pawn actor, Pawn pet, LeadYourPetGameComponent component, IEnumerable<LeadYourPetInteractionKind> kinds, bool rawLabel = false)
+        private FloatMenuOption BuildInteractionMenu(string labelKey, Pawn actor, Pawn pet, LeadYourPetGameComponent component, IEnumerable<LeadYourPetInteractionKind> kinds)
         {
             if (!actor.CanReach(pet, PathEndMode.Touch, Danger.Deadly))
             {
-                return rawLabel ? DisabledOptionRaw(label, T("LeadYourPet_Reason_Unreachable")) : DisabledOption(label, "LeadYourPet_Reason_Unreachable", true);
+                return DisabledOption(labelKey, "LeadYourPet_Reason_Unreachable");
             }
 
-            return new FloatMenuOption(rawLabel ? label : T(label), delegate
+            return new FloatMenuOption(T(labelKey), delegate
             {
                 List<FloatMenuOption> options = new List<FloatMenuOption>();
                 foreach (LeadYourPetInteractionKind kind in kinds)
@@ -172,11 +168,6 @@ namespace LeadYourPet
         private static FloatMenuOption DisabledOption(string label, string reasonKey, bool rawLabel = true)
         {
             return new FloatMenuOption(F("LeadYourPet_LabelWithReason", label, T(reasonKey)), null);
-        }
-
-        private static FloatMenuOption DisabledOptionRaw(string label, string reason)
-        {
-            return new FloatMenuOption(string.Format(T("LeadYourPet_LabelWithReason"), label, reason), null);
         }
 
         private static string T(string key)

@@ -10,6 +10,8 @@
 - 新包名：`nanaloveyuki.leadyourpet.continued`。`About/PublishedFileId.txt` 是本续作的创意工坊文件 ID，不是原版 ID。
 - IrisMenus（`Nanaloveyuki.IrisMenus`，1.6）可选。运行时检测到已启用且支持 1.6，并且公开菜单 API 存在时，用反射登记牵引、幼年鼠族、年龄、来客、离图、主人喂食六页，写入同一套设置。主程序集不引用 IrisMenus.dll。未安装、未启用、不是 1.6 或 API 对不上时不登记，原版设置窗口照常可用。不写入 `modDependencies`。
 - 饥与祸通过 `LeadYourPet.LeadYourPetApi` 调用。本模组不检测饥与祸，也不引用它的程序集。
+- PA’s God Hands（`Palpha.godhands`）可选。抓取鼠蛋、牵引者或锚定 Pawn 时暂停牵引和互动动画，不完成旧动画的传送；隐藏手持期间的绳子，其他超出硬绳长的绳子也不绘制。释放后恢复牵引，并清理相关 Pawn 遗留的神之手 `Wait(99999)`，不结束普通等待或无关 Pawn 的任务。主程序集不引用 PA_GodHands.dll。
+- 访客的离场集合与入场集合分开识别。商队/访客开始撤离时，释放其自己旅行鼠蛋的牵引、睡眠和忙碌任务，保留交易身份及 Lord 成员关系；玩家拥有的鼠蛋不受此例外影响。同 Lord 成员可搬运倒地或不能移动的鼠蛋，到集合点落地后恢复原版集合检查；在出口先放下鼠蛋再使其离图，成人继续处理其他成员。已有外部幼儿抱持不会被抢占，撤离时落地不重新建绳。
 
 ## 替换原版
 
@@ -37,6 +39,16 @@ IrisMenus 的「年龄」页及原版模组设置新增「不限制牵引年龄�
 
 验证：Release 构建零警告、零错误；实际生产方法的 6 项 headless 检查通过，使用 30 岁智人囚犯覆盖默认拒绝、提高上限、上限边界、取消年龄限制、宠物开关仍生效及恢复下限。未运行游戏内牵引动画或实机存档验收。
 
+## 成人牵引与中英文案
+
+- 恢复自动互动冷却：玩家牵引间隔 1800–3600 tick，非玩家 4200–7200 tick；没有可用互动时也进入冷却。牵引者征召、移动或睡眠时暂停随机互动，手动互动保留。
+- 修复互相牵引形成的控制环：新牵引方向优先，释放新牵引者的旧反向牵引；普通链式牵引和一人牵多个目标保留。加载已有控制环时按创建时间恢复，保留最新方向；解绑同时结束对应跟随任务并取消旧动画。
+- 智人菜单、头顶互动、任务报告和共享心情说明改用年龄中性的中英文案，不再把成年人称作孩子或鼠蛋。真正的母婴、子女和生成鼠蛋内容保留相应称谓；鼠族为 `Ratkin`，鼠蛋为 `Young Ratkin`。
+
+English: Automatic interactions now respect their cooldown and pause while the leader is drafted, moving or sleeping. Reversing a leash breaks reciprocal control; loading a cyclic leash relationship keeps the newest direction. Adult-facing menus, interaction labels, job reports and shared thoughts use age-neutral wording in English and Simplified Chinese. `Ratkin` names the race; `Young Ratkin` names the young pawns.
+
+验证：Release 构建零警告、零错误；Mono headless 回归 158 项通过、0 项失败，包含新增 8 项冷却、征召/移动、方向反转、链式牵引和旧存档控制环回归。生产程序集 smoke 覆盖冷却暂停/恢复、30 岁智人反转牵引，以及中英各 20 条成人殖民者互动、20 条成人非殖民者互动和 3 条任务报告；125 个 Keyed 键两语言一致，DefInjected 路径有效。临时游戏 DLL 仅移除 UI/配置静态初始化器，未替换寻路或任务行为。没有用户存档，不能确认其反向移动是否来自控制环；未运行 Unity 画面、真实逐格寻路或实机存档验收，未部署。
+
 ## 开发
 
 ```powershell
@@ -49,4 +61,25 @@ dotnet test Source/Tests/LeadYourPet.Tests.csproj -c Release -p:RimWorldDir="D:/
 ./scripts/build-and-deploy.ps1 -RimWorldDir="E:/Apps/Steam/steamapps/common/RimWorld"
 ```
 
-测试包含原版规则回归、反射重载/默认参数/out 参数，以及原版持久化文件和 Def 内容快照。部署仅复制运行时文件，校验 SHA-256，不改启用列表、旧版目录或玩家存档。仓库是独立历史，不导入原版 Git 记录。
+测试包含规则回归、反射重载/默认参数/out 参数，以及抓取、绘绳边界、撤离阶段、归属和搬运授权的行为回归；不以源码文本或文件哈希断言代替行为。部署仅复制运行时文件，校验 SHA-256，不改启用列表、旧版目录或玩家存档。仓库是独立历史，不导入原版 Git 记录。
+
+### 抓取与撤离修复验证
+
+- 对 RimWorld 1.6.4871 rev590 和 PA’s God Hands 2.0 的实际 DLL 核对契约；构建零警告、零错误。
+- Mono 反射 runner 执行现有 Fact/Theory 与 xUnit 断言：150 项通过、0 项失败。生产程序集 headless smoke：27 项通过，包括真实搬运 Job 生成与预约、抱持容器中的 Lord 成员保留、恢复集合检查、阶段切换/外部抓取取消条件、后续幼儿选择、睡眠/忙碌清理及释放后的长等待清理。
+- 可选兼容检查：未加载神之手时跳过两处补丁；加载实际 DLL 后抓取目标及私有 `core` 字段绑定成功，真实 `ForceReleaseGrab` 经 Harmony 补丁执行后清除抓取记录。
+- 消融均使用临时独立程序集、独立进程，不向生产代码添加开关：
+
+| 临时禁用的修复 | 实际观察到的回归 |
+| --- | --- |
+| 抓取状态识别 | 抓取宠物或牵引者时仍提供绘绳目标，2 项失败 |
+| 抓取时取消旧动画 | 旧互动动画仍然存活，1 项失败 |
+| 独立绘绳长度上限 | 16 格与 254 格边界仍提供绘绳目标，2 项失败；15 格负控通过 |
+| 撤离阶段识别 | 离场识别、合法搬运与两种牵引交接回归，7 项失败；9 项负控通过 |
+| 提前交接/解绑 | 宠物牵引与母婴牵引仍存在，2 项失败 |
+| 撤离搬运选择 | 不能移动的成员和后续幼儿均无搬运 Job，2 项失败 |
+| 抱持期间的集合保护 | 抱持成员不再阻止退出集合检查，1 项失败 |
+| 释放后的任务恢复 | 已解绑撤离鼠蛋残留 `Wait(99999)`，1 项失败 |
+
+验证边界：headless fixture 只在临时游戏 DLL 中禁用三个 UI 材质静态初始化器及 ModsConfig 文件加载初始化器，未替换游戏行为方法。没有运行完整 Unity 场景、逐格寻路、真实落地生成或整队离图，也没有实机旧档验收；以上不等同于完整游戏内验收。本次未部署、未修改启用列表或玩家存档；临时 smoke 和消融工具完成后移除。
+

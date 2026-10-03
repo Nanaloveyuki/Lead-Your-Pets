@@ -185,6 +185,11 @@ namespace LeadYourPet
 
             LeashLink link = Component.GetLinkForPet(pawn);
             MouseEggState state = Component.GetMouseEggState(pawn);
+            if (IsUnprotectedTravelStock(pawn) && IsNonPlayerTravelDeparture(pawn))
+            {
+                return false;
+            }
+
             return LeadYourPetRules.ShouldTreatAsProtectedLeashedMouseEgg(
                 isMouseEgg,
                 isBaby,
@@ -356,9 +361,8 @@ namespace LeadYourPet
 
         public static bool ShouldBlockCarryOfProtectedMouseEgg(Pawn carrier, Pawn target)
         {
-            return LeadYourPetRules.ShouldBlockProtectedCarry(
-                IsProtectedLeashedMouseEgg(target),
-                allowColonistCarry: false);
+            return !CanCarryForNonPlayerDeparture(carrier, target)
+                && LeadYourPetRules.ShouldBlockProtectedCarry(IsProtectedLeashedMouseEgg(target), allowColonistCarry: false);
         }
 
         public static bool ShouldAllowProtectedMouseEggPrisonerTransfer(Pawn carrier, Pawn target)
@@ -411,12 +415,63 @@ namespace LeadYourPet
                 return false;
             }
 
+            Lord lord = pawn.GetLord();
             string dutyName = pawn.mindState?.duty?.def?.defName;
-            string lordToilName = pawn.GetLord()?.CurLordToil?.GetType().Name;
             return LeadYourPetRules.ShouldPreserveMapExitJob(
                 currentJobExitsMap: pawn.CurJob != null && pawn.CurJob.exitMapOnArrival,
-                currentDutyExitsMap: !string.IsNullOrEmpty(dutyName) && dutyName.StartsWith("ExitMap", System.StringComparison.Ordinal),
-                lordToilExitsMap: !string.IsNullOrEmpty(lordToilName) && lordToilName.StartsWith("LordToil_ExitMap", System.StringComparison.Ordinal));
+                currentDutyExitsMap: !string.IsNullOrEmpty(dutyName) && dutyName.StartsWith("ExitMap", StringComparison.Ordinal),
+                lordToilExitsMap: IsDepartureToil(lord, lord?.CurLordToil));
+        }
+
+        internal static bool IsDepartureToil(Lord lord, LordToil toil)
+        {
+            if (toil == null)
+            {
+                return false;
+            }
+
+            if (toil is LordToil_ExitMap || toil is LordToil_TakeWoundedGuest
+                || toil.GetType().Name.StartsWith("LordToil_ExitMap", StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            return lord?.LordJob is LordJob_VisitColony visit
+                && visit.exitSubgraph != null && visit.exitSubgraph.lordToils.Contains(toil);
+        }
+
+        internal static bool IsNonPlayerTravelDeparture(Pawn pawn)
+        {
+            Lord lord = pawn?.GetLord();
+            if (lord?.faction == null || lord.faction.IsPlayer || pawn.Faction?.IsPlayer == true || pawn.IsPrisonerOfColony)
+            {
+                return false;
+            }
+
+            return IsDepartureToil(lord, lord.CurLordToil);
+        }
+
+        internal static bool IsUnprotectedTravelStock(Pawn pawn)
+        {
+            MouseEggState state = Component?.GetMouseEggState(pawn);
+            return state?.IsTravelStock == true && pawn.Faction?.IsPlayer != true
+                && !pawn.IsPrisonerOfColony && state.CurrentMaster?.Faction?.IsPlayer != true
+                && Component.GetLinkForPet(pawn)?.Master?.Faction?.IsPlayer != true;
+        }
+
+        internal static bool CanCarryForNonPlayerDeparture(Pawn carrier, Pawn target)
+        {
+            return carrier != null && target != null && carrier != target
+                && IsNonPlayerTravelDeparture(carrier) && IsNonPlayerTravelDeparture(target)
+                && carrier.GetLord() == target.GetLord()
+                && IsUnprotectedTravelStock(target);
+        }
+
+        internal static bool CanPerformDepartureHold(Pawn actor, Pawn target, string jobName)
+        {
+            return CanCarryForNonPlayerDeparture(actor, target)
+                || (jobName != null && jobName.StartsWith("RimTalk_BeingCarried", StringComparison.Ordinal)
+                    && CanCarryForNonPlayerDeparture(target, actor));
         }
 
         public static bool TryDismountExternalToddlerHold(Pawn pawn)
@@ -965,20 +1020,27 @@ namespace LeadYourPet
             }
 
             LeashLink link = Component.GetLinkForPet(pawn);
-            if (link == null)
+            if (link == null || GodHandsCompat.IsGrabbed(pawn) || GodHandsCompat.IsGrabbed(link.Master)
+                || ShouldPreserveMapExitMovement(pawn) || ShouldPreserveMapExitMovement(link.Master))
             {
                 return false;
             }
 
             Thing followThing = GetCurrentFollowThing(link);
-            if (followThing != null && followThing != pawn && followThing.Spawned && followThing.Map == pawn.Map)
+            if (followThing is Pawn followedPawn && GodHandsCompat.IsGrabbed(followedPawn))
+            {
+                return false;
+            }
+            if (followThing != null && followThing != pawn && followThing.Spawned && followThing.Map == pawn.Map
+                && pawn.Position.DistanceTo(followThing.Position) <= HardLeashLength)
             {
                 target = followThing;
                 return true;
             }
 
             IntVec3 anchorCell = GetAnchorCell(link);
-            if (anchorCell.IsValid && anchorCell.InBounds(pawn.Map))
+            if (anchorCell.IsValid && anchorCell.InBounds(pawn.Map)
+                && pawn.Position.DistanceTo(anchorCell) <= HardLeashLength)
             {
                 target = anchorCell;
                 return true;
@@ -1075,26 +1137,26 @@ namespace LeadYourPet
             {
                 switch (kind)
                 {
-                    case LeadYourPetInteractionKind.Kick: return "逗孩子跑两步";
-                    case LeadYourPetInteractionKind.Observe: return "看看孩子";
-                    case LeadYourPetInteractionKind.Drag: return "拉着孩子走";
-                    case LeadYourPetInteractionKind.TapHead: return "拍拍孩子脑袋";
-                    case LeadYourPetInteractionKind.PullTail: return "拽拽尾巴闹着玩";
-                    case LeadYourPetInteractionKind.PullEar: return "捏捏耳朵";
-                    case LeadYourPetInteractionKind.Whirl: return "抱起来转圈";
-                    case LeadYourPetInteractionKind.Slap: return "推着转圈玩";
-                    case LeadYourPetInteractionKind.Pat: return "轻轻拍一拍";
-                    case LeadYourPetInteractionKind.KickButt: return "赶着孩子往前跑";
-                    case LeadYourPetInteractionKind.WatchWork: return "让孩子看看大人在做事";
-                    case LeadYourPetInteractionKind.Fed: return "喂孩子吃点东西";
-                    case LeadYourPetInteractionKind.RestAtFeet: return "让孩子在脚边歇会";
-                    case LeadYourPetInteractionKind.IdleNearOwner: return "让孩子在旁边待着";
-                    case LeadYourPetInteractionKind.StudyFloor: return "陪孩子看地上的东西";
-                    case LeadYourPetInteractionKind.SillySmile: return "逗孩子傻乐";
-                    case LeadYourPetInteractionKind.TailPetting: return "顺顺尾巴";
-                    case LeadYourPetInteractionKind.EarPetting: return "揉揉耳朵";
-                    case LeadYourPetInteractionKind.OwnerWaited: return "等孩子慢慢跟上";
-                    case LeadYourPetInteractionKind.Snack: return "给孩子零嘴";
+                    case LeadYourPetInteractionKind.Kick: return "LeadYourPet_Interaction_Colonist_Kick".Translate().Resolve();
+                    case LeadYourPetInteractionKind.Observe: return "LeadYourPet_Interaction_Colonist_Observe".Translate().Resolve();
+                    case LeadYourPetInteractionKind.Drag: return "LeadYourPet_Interaction_Colonist_Drag".Translate().Resolve();
+                    case LeadYourPetInteractionKind.TapHead: return "LeadYourPet_Interaction_Colonist_TapHead".Translate().Resolve();
+                    case LeadYourPetInteractionKind.PullTail: return "LeadYourPet_Interaction_Colonist_PullTail".Translate().Resolve();
+                    case LeadYourPetInteractionKind.PullEar: return "LeadYourPet_Interaction_Colonist_PullEar".Translate().Resolve();
+                    case LeadYourPetInteractionKind.Whirl: return "LeadYourPet_Interaction_Colonist_Whirl".Translate().Resolve();
+                    case LeadYourPetInteractionKind.Slap: return "LeadYourPet_Interaction_Colonist_Slap".Translate().Resolve();
+                    case LeadYourPetInteractionKind.Pat: return "LeadYourPet_Interaction_Colonist_Pat".Translate().Resolve();
+                    case LeadYourPetInteractionKind.KickButt: return "LeadYourPet_Interaction_Colonist_KickButt".Translate().Resolve();
+                    case LeadYourPetInteractionKind.WatchWork: return "LeadYourPet_Interaction_Colonist_WatchWork".Translate().Resolve();
+                    case LeadYourPetInteractionKind.Fed: return "LeadYourPet_Interaction_Colonist_Fed".Translate().Resolve();
+                    case LeadYourPetInteractionKind.RestAtFeet: return "LeadYourPet_Interaction_Colonist_RestAtFeet".Translate().Resolve();
+                    case LeadYourPetInteractionKind.IdleNearOwner: return "LeadYourPet_Interaction_Colonist_IdleNearOwner".Translate().Resolve();
+                    case LeadYourPetInteractionKind.StudyFloor: return "LeadYourPet_Interaction_Colonist_StudyFloor".Translate().Resolve();
+                    case LeadYourPetInteractionKind.SillySmile: return "LeadYourPet_Interaction_Colonist_SillySmile".Translate().Resolve();
+                    case LeadYourPetInteractionKind.TailPetting: return "LeadYourPet_Interaction_Colonist_TailPetting".Translate().Resolve();
+                    case LeadYourPetInteractionKind.EarPetting: return "LeadYourPet_Interaction_Colonist_EarPetting".Translate().Resolve();
+                    case LeadYourPetInteractionKind.OwnerWaited: return "LeadYourPet_Interaction_Colonist_OwnerWaited".Translate().Resolve();
+                    case LeadYourPetInteractionKind.Snack: return "LeadYourPet_Interaction_Colonist_Snack".Translate().Resolve();
                 }
             }
             switch (kind)
@@ -1128,11 +1190,11 @@ namespace LeadYourPet
             switch (state)
             {
                 case LeashedMouseEggDutyState.SleepAtLeash:
-                    return "被牵着睡觉";
+                    return "LeadYourPet_Duty_SleepAtLeash".Translate().Resolve();
                 case LeashedMouseEggDutyState.WaitForFeeding:
-                    return "等待主人投喂";
+                    return "LeadYourPet_Duty_WaitForFeeding".Translate().Resolve();
                 default:
-                    return "跟随主人";
+                    return "LeadYourPet_Duty_FollowMaster".Translate().Resolve();
             }
         }
 

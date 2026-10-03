@@ -24,6 +24,7 @@ namespace LeadYourPet
 
         public LeadYourPetGameComponent(Game game)
         {
+            GodHandsCompat.Reset();
         }
 
         public override void ExposeData()
@@ -32,6 +33,7 @@ namespace LeadYourPet
             Scribe_Collections.Look(ref links, "links", LookMode.Deep);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                GodHandsCompat.Reset();
                 if (mouseEggStates == null)
                 {
                     mouseEggStates = new List<MouseEggState>();
@@ -324,14 +326,18 @@ namespace LeadYourPet
             linksByMaster.Clear();
             mouseEggStateByPawn.Clear();
 
-            for (int i = 0; i < links.Count; i++)
-            {
-                RegisterLink(links[i]);
-            }
-
             for (int i = 0; i < mouseEggStates.Count; i++)
             {
                 RegisterMouseEggState(mouseEggStates[i]);
+            }
+
+            // Replay old saves in creation order so the latest direction breaks a cycle.
+            List<LeashLink> restoredLinks = links.OrderBy(x => x.CreatedTick).ToList();
+            for (int i = 0; i < restoredLinks.Count; i++)
+            {
+                LeashLink link = restoredLinks[i];
+                ReleaseIncomingLeashCycle(link.Master, link.Pet);
+                RegisterLink(link);
             }
         }
 

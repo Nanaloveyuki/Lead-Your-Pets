@@ -32,7 +32,8 @@ namespace LeadYourPet
 
         private void ApplyInteraction(Pawn master, Pawn pet, LeadYourPetInteractionKind kind, bool applyPhysicalEffects, bool automatic)
         {
-            if (!LeadYourPetUtility.CanPerformInteraction(pet, kind, out _))
+            if (GodHandsCompat.IsGrabbed(master) || GodHandsCompat.IsGrabbed(pet)
+                || !LeadYourPetUtility.CanPerformInteraction(pet, kind, out _))
             {
                 return;
             }

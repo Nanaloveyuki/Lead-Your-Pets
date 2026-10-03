@@ -257,7 +257,8 @@ namespace LeadYourPet
 
         public void TryRestoreTravelMouseEggLeashAfterCarry(Pawn carrier, Pawn egg)
         {
-            if (carrier == null || egg == null || GetLinkForPet(egg) != null)
+            if (carrier == null || egg == null || GetLinkForPet(egg) != null
+                || LeadYourPetUtility.IsNonPlayerTravelDeparture(carrier))
             {
                 return;
             }

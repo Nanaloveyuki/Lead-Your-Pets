@@ -10,6 +10,7 @@ namespace LeadYourPet
         public static JobDef LeadYourPet_EndLeash;
         public static JobDef LeadYourPet_FollowMaster;
         public static JobDef LeadYourPet_MouseEggInteraction;
+        public static JobDef LeadYourPet_CarryTravelMouseEgg;
 
         public static HediffDef LeadYourPet_DragBruise;
         public static HediffDef LeadYourPet_DragSlow;

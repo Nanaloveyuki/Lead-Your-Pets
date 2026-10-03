@@ -437,9 +437,9 @@ namespace LeadYourPet
 
         IEnumerable<object> SearchMouseEgg()
         {
-            yield return IrisMenusCompat.Entry("mouse-eggs", "LeadYourPet_Settings_AllowRatkinYoungPets", "young ratkin pet",
+            yield return IrisMenusCompat.Entry("mouse-eggs", "LeadYourPet_Settings_AllowRatkinYoungPets", "humanlike adult prisoner young ratkin leash 智人 成年 囚犯 牵引 鼠蛋",
                 "LeadYourPet_Settings_AllowRatkinYoungPets_Tooltip");
-            yield return IrisMenusCompat.Entry("distance", "LeadYourPet_Settings_MouseEggLeashStartDistance", "young ratkin start distance");
+            yield return IrisMenusCompat.Entry("distance", "LeadYourPet_Settings_MouseEggLeashStartDistance", "humanlike leash start distance 智人 牵引 起始 距离");
         }
 
         IEnumerable<object> SearchAge()

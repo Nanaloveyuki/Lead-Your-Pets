@@ -34,7 +34,9 @@ namespace LeadYourPet
             facing = Rot4.South;
 
             MouseEggInteractionAnimation anim = GetInteractionAnimationForPet(pet);
-            if (anim == null || !anim.PetUsesCustomRender || pet == null)
+            if (anim == null || !anim.PetUsesCustomRender || pet == null
+                || GodHandsCompat.IsGrabbed(pet) || GodHandsCompat.IsGrabbed(anim.Master)
+                || LeadYourPetUtility.ShouldPreserveMapExitMovement(pet))
             {
                 return false;
             }
@@ -53,6 +55,13 @@ namespace LeadYourPet
             for (int i = activeAnimations.Count - 1; i >= 0; i--)
             {
                 MouseEggInteractionAnimation anim = activeAnimations[i];
+                if (GodHandsCompat.IsGrabbed(anim.Pet) || GodHandsCompat.IsGrabbed(anim.Master))
+                {
+                    YayoAnimationCompat.Clear(anim.Pet);
+                    YayoAnimationCompat.Clear(anim.Master);
+                    activeAnimations.RemoveAt(i);
+                    continue;
+                }
                 if (anim.Master == null || anim.Pet == null || Find.TickManager.TicksGame > anim.EndTick)
                 {
                     FinalizeInteractionAnimation(anim);
@@ -169,7 +178,7 @@ namespace LeadYourPet
             activeAnimations.RemoveAll(x => x == null || x.Master == null || x.Pet == null || x.Master == master || x.Pet == pet || x.Master == pet || x.Pet == master);
             activeAnimations.Add(anim);
         }
-        private void StopInteractionAnimation(Pawn pet)
+        private void StopInteractionAnimation(Pawn pet, bool finalizeTeleport = true)
         {
             if (pet == null)
             {
@@ -184,8 +193,12 @@ namespace LeadYourPet
                     continue;
                 }
 
-                FinalizeInteractionAnimation(anim);
+                if (finalizeTeleport)
+                {
+                    FinalizeInteractionAnimation(anim);
+                }
                 YayoAnimationCompat.Clear(pet);
+                YayoAnimationCompat.Clear(anim.Master);
                 activeAnimations.RemoveAt(i);
             }
         }

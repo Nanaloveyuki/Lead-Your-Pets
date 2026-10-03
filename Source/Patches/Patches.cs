@@ -295,11 +295,9 @@ namespace LeadYourPet
         {
             Pawn pawn = __instance == null ? null : PawnField(__instance);
             Pawn targetPawn = newJob?.targetA.Thing as Pawn;
-            if (LeadYourPetUtility.ShouldBlockExternalToddlerPickup(targetPawn, newJob?.def?.defName)
-                || LeadYourPetUtility.ShouldBlockExternalToddlerPickup(pawn, newJob?.def?.defName)
-                || (LeadYourPetRules.IsExternalToddlerHoldJob(newJob?.def?.defName)
-                    && (LeadYourPetUtility.ShouldPreserveMapExitMovement(targetPawn)
-                        || LeadYourPetUtility.ShouldPreserveMapExitMovement(pawn))))
+            bool departureCarry = LeadYourPetUtility.CanPerformDepartureHold(pawn, targetPawn, newJob?.def?.defName);
+            if (!departureCarry && (LeadYourPetUtility.ShouldBlockExternalToddlerPickup(targetPawn, newJob?.def?.defName)
+                || LeadYourPetUtility.ShouldBlockExternalToddlerPickup(pawn, newJob?.def?.defName)))
             {
                 return false;
             }
@@ -317,8 +315,9 @@ namespace LeadYourPet
         {
             Pawn pawn = __instance == null ? null : PawnField(__instance);
             Pawn targetPawn = job?.targetA.Thing as Pawn;
-            if (LeadYourPetUtility.ShouldBlockExternalToddlerPickup(targetPawn, job?.def?.defName)
-                || LeadYourPetUtility.ShouldBlockExternalToddlerPickup(pawn, job?.def?.defName))
+            if (!LeadYourPetUtility.CanPerformDepartureHold(pawn, targetPawn, job?.def?.defName)
+                && (LeadYourPetUtility.ShouldBlockExternalToddlerPickup(targetPawn, job?.def?.defName)
+                    || LeadYourPetUtility.ShouldBlockExternalToddlerPickup(pawn, job?.def?.defName)))
             {
                 __result = false;
                 return false;

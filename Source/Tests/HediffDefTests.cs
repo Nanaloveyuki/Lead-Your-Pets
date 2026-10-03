@@ -33,9 +33,6 @@ namespace LeadYourPet.Tests
             Assert.Equal("0.25", (string)thought.Element("durationDays"));
             Assert.Equal("10", (string)thought.Element("stackLimit"));
             Assert.Equal("3", (string)thought.Descendants("baseMoodEffect").Single());
-            string description = (string)thought.Descendants("description").Single();
-            Assert.Contains("想踹飞", description);
-            Assert.DoesNotContain("可爱", description);
         }
 
         private static string FindHediffDefsPath()

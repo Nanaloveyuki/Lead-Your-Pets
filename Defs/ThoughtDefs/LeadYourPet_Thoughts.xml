@@ -8,8 +8,8 @@
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>我带着宠物</label>
-        <description>宠物在身边，心情都变好了。</description>
+        <label>leading a pet</label>
+        <description>I have a pet with me. It makes me feel better.</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
     </stages>
@@ -23,8 +23,8 @@
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>我有一只鼠蛋宠物，好玩</label>
-        <description>这只鼠蛋跟在身边，总感觉很好玩。</description>
+        <label>keeping someone as a pet</label>
+        <description>I have someone following me around as a pet. It's amusing.</description>
         <baseMoodEffect>10</baseMoodEffect>
       </li>
     </stages>
@@ -38,8 +38,8 @@
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>窝被当成宠物叽，窝害怕叽</label>
-        <description>窝为什么会变成宠物叽……好怕叽。</description>
+        <label>treated as a pet</label>
+        <description>I'm being treated as a pet. I'm scared.</description>
         <baseMoodEffect>-10</baseMoodEffect>
       </li>
     </stages>
@@ -53,8 +53,8 @@
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>听到鼠蛋哭声</label>
-        <description>附近的鼠蛋哭得很响，吵得人想踹飞它，心情却莫名好了起来。</description>
+        <label>heard crying</label>
+        <description>Someone nearby is crying loudly. I want to kick them away, but somehow I feel better.</description>
         <baseMoodEffect>3</baseMoodEffect>
       </li>
     </stages>
@@ -66,7 +66,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>踹一脚鼠蛋</label><description>路过时顺脚踹了踹鼠蛋，意外地有点解压。</description><baseMoodEffect>5</baseMoodEffect></li></stages>
+    <stages><li><label>kicked someone</label><description>I gave them a kick as I passed by. It was oddly relaxing.</description><baseMoodEffect>5</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetKick</defName>
@@ -74,7 +74,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被踹一脚叽</label><description>好端端地就被主人踹了一下，窝好委屈叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+    <stages><li><label>got kicked</label><description>My owner kicked me for no reason. I feel hurt.</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -83,7 +83,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>围观宠物鼠蛋</label><description>盯着鼠蛋发呆看了一会儿，越看越有意思。</description><baseMoodEffect>1</baseMoodEffect></li></stages>
+    <stages><li><label>watched my pet</label><description>I stared at my pet for a while. It was entertaining.</description><baseMoodEffect>1</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetObserve</defName>
@@ -91,7 +91,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被围观吱</label><description>被一群人盯着看，窝好不自在吱。</description><baseMoodEffect>-1</baseMoodEffect></li></stages>
+    <stages><li><label>being watched</label><description>People were staring at me. It made me uncomfortable.</description><baseMoodEffect>-1</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -100,7 +100,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>拖行一只鼠蛋</label><description>鼠蛋被自己拽着在地上滑过去，场面有些滑稽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>dragged someone</label><description>I dragged them across the ground. It looked rather funny.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetDrag</defName>
@@ -108,7 +108,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被拖行叽</label><description>被绳子拽着在地上拖来拖去，窝头都晕了叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+    <stages><li><label>got dragged</label><description>I was dragged around by a rope. My head is spinning.</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -117,7 +117,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>敲鼠蛋脑袋</label><description>顺手敲了敲鼠蛋脑袋，听个响儿。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>tapped someone's head</label><description>I tapped their head just to hear the sound.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetTapHead</defName>
@@ -125,7 +125,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被主人敲脑袋吱</label><description>脑袋被敲得嗡嗡响，窝不开心吱。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+    <stages><li><label>head tapped</label><description>My owner tapped my head. It's ringing, and I'm not happy.</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -134,7 +134,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>扯鼠蛋尾巴</label><description>揪着尾巴扯了扯，看到反应还挺有趣。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>pulled a tail</label><description>I tugged their tail. Their reaction was amusing.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetPullTail</defName>
@@ -142,7 +142,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被扯了尾巴叽</label><description>尾巴被扯得生疼，窝眼泪都快出来了叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+    <stages><li><label>tail pulled</label><description>My tail was pulled so hard it hurt. I nearly cried.</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -151,7 +151,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>揪鼠蛋耳朵</label><description>提着耳朵拽了拽，手感很奇怪。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>pulled an ear</label><description>I tugged their ear. It felt strange.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetPullEar</defName>
@@ -159,7 +159,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被揪了耳朵，痛痛</label><description>耳朵被揪得火辣辣地疼，窝想缩起来叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+    <stages><li><label>ear pulled</label><description>My ear burns where it was pulled. I want to curl up.</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -168,7 +168,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>玩鼠旋风</label><description>把鼠蛋当玩具甩了一圈，莫名有点开心。</description><baseMoodEffect>5</baseMoodEffect></li></stages>
+    <stages><li><label>swung someone around</label><description>I swung them around like a toy. It made me happy.</description><baseMoodEffect>5</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetWhirl</defName>
@@ -176,7 +176,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被当悠悠球转，呕</label><description>整个世界都在打转，窝快吐出来了叽。</description><baseMoodEffect>-10</baseMoodEffect></li></stages>
+    <stages><li><label>swung around</label><description>Everything is spinning. I think I'm going to throw up.</description><baseMoodEffect>-10</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -185,7 +185,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>扇鼠蛋巴掌</label><description>照着鼠蛋的小脸来了一下，声音清脆。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>slapped someone</label><description>I slapped their face. It made a sharp sound.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetSlap</defName>
@@ -193,7 +193,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被扇主人巴掌吱</label><description>脸上火辣辣的，窝不喜欢这样吱。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+    <stages><li><label>got slapped</label><description>My owner slapped me. My face burns, and I don't like it.</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -202,7 +202,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>拍打鼠蛋</label><description>拍了拍鼠蛋的身子，像在摆弄小玩意。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>patted someone</label><description>I patted their body, as if I were playing with a toy.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetPat</defName>
@@ -210,7 +210,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被主人拍打了叽</label><description>被拍得一抖一抖的，窝不高兴叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+    <stages><li><label>got patted</label><description>My owner patted me until I shook. I'm not happy.</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -219,7 +219,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>踹鼠蛋屁股</label><description>对着鼠蛋屁股补了一脚，心里有点爽。</description><baseMoodEffect>3</baseMoodEffect></li></stages>
+    <stages><li><label>kicked someone in the butt</label><description>I gave them a kick in the butt. It felt good.</description><baseMoodEffect>3</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetKickButt</defName>
@@ -227,7 +227,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被主人踹了屁股叽</label><description>屁股被踹得发麻，窝想躲远一点叽。</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
+    <stages><li><label>got kicked in the butt</label><description>My owner kicked my butt. It's numb, and I want to stay away.</description><baseMoodEffect>-2</baseMoodEffect></li></stages>
   </ThoughtDef>
 
   <ThoughtDef>
@@ -236,7 +236,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>观察主人工作叽</label><description>待在主人旁边看着忙来忙去，窝觉得很安心叽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>watched my owner work</label><description>I stayed nearby and watched my owner work. I felt safe.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetFed</defName>
@@ -244,7 +244,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被主人投喂吱</label><description>主人给窝找了吃的，肚子暖暖的吱。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>fed by my owner</label><description>My owner found me something to eat. My stomach feels warm.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetRestAtFeet</defName>
@@ -252,7 +252,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>在主人脚边休息</label><description>蜷在主人脚边打盹，周围很安全。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>rested at my owner's feet</label><description>I curled up at my owner's feet for a nap. I felt safe.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetIdleNearOwner</defName>
@@ -260,7 +260,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>在主人身边发呆</label><description>什么都不做，只是待在主人附近，窝也很满足。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>idled near my owner</label><description>I did nothing but stay near my owner. I was content.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetStudyFloor</defName>
@@ -268,7 +268,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>在主人身边观察地板</label><description>地板上好像有很多有趣的东西可以研究叽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>looked at the floor</label><description>I found some interesting things to look at on the floor.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetSillySmile</defName>
@@ -276,7 +276,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>在主人身边傻笑</label><description>想到什么好玩的事，窝忍不住在旁边傻笑叽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>smiled near my owner</label><description>I thought of something funny and couldn't help smiling.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetTailPetting</defName>
@@ -284,7 +284,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被抚摸尾巴</label><description>尾巴被轻轻顺着摸过去，舒服得窝眼睛都眯起来了。</description><baseMoodEffect>5</baseMoodEffect></li></stages>
+    <stages><li><label>tail stroked</label><description>My tail was gently stroked. It felt so good I closed my eyes.</description><baseMoodEffect>5</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetEarPetting</defName>
@@ -292,7 +292,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>被抚摸耳朵</label><description>耳朵被温柔地摸了摸，整只鼠蛋都放松了下来。</description><baseMoodEffect>5</baseMoodEffect></li></stages>
+    <stages><li><label>ears stroked</label><description>My ears were gently stroked. I relaxed.</description><baseMoodEffect>5</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetOwnerWaited</defName>
@@ -300,7 +300,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>主人等我</label><description>主人没有丢下窝，一个人走远前还停下来等窝。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>my owner waited for me</label><description>My owner stopped to wait for me instead of leaving me behind.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_PetSnack</defName>
@@ -308,7 +308,7 @@
     <durationDays>1</durationDays>
     <stackLimit>5</stackLimit>
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
-    <stages><li><label>主人给我吃零食</label><description>吃到了主人递来的小零食，今天真不错叽。</description><baseMoodEffect>2</baseMoodEffect></li></stages>
+    <stages><li><label>got a snack</label><description>My owner gave me a snack. Today is a good day.</description><baseMoodEffect>2</baseMoodEffect></li></stages>
   </ThoughtDef>
   <ThoughtDef>
     <defName>LeadYourPet_MouseEggParentPetMood</defName>
@@ -317,7 +317,7 @@
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>warren child is a pet</label>
+        <label>my child treated as a pet</label>
         <description>One of my children has been treated as a pet.</description>
         <baseMoodEffect>-5</baseMoodEffect>
       </li>
@@ -331,8 +331,8 @@
     <developmentalStageFilter>Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>我在看着孩子</label>
-        <description>孩子被牵在身边，不容易乱跑，省心多了。</description>
+        <label>leading someone</label>
+        <description>I have someone on a leash beside me. Keeping them close is reassuring.</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
     </stages>
@@ -345,8 +345,8 @@
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>有人看着窝</label>
-        <description>有人牵着窝看着窝，窝不用担心乱跑吱。</description>
+        <label>being led</label>
+        <description>Someone is leading me. I can stay close without worrying about where to go.</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
     </stages>
@@ -388,8 +388,8 @@
     <developmentalStageFilter>Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>陪孩子玩了一会</label>
-        <description>只是陪着孩子闹腾一会，心情放松了不少。</description>
+        <label>played together</label>
+        <description>I spent some time playing with someone. I feel more relaxed.</description>
         <baseMoodEffect>2</baseMoodEffect>
       </li>
     </stages>
@@ -403,8 +403,8 @@
     <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
     <stages>
       <li>
-        <label>被陪着玩了吱</label>
-        <description>有人陪窝玩，窝今天过得挺开心吱。</description>
+        <label>someone played with me</label>
+        <description>Someone spent time playing with me. I enjoyed the company.</description>
         <baseMoodEffect>2</baseMoodEffect>
       </li>
     </stages>
