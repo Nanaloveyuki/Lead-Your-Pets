@@ -58,25 +58,50 @@ namespace LeadYourPet
             }
 
             EndLeashForPet(pawn, false);
-
+            PawnComponentsUtility.AddAndRemoveDynamicComponents(pawn, true);
             if (pawn.Faction != Faction.OfPlayer)
             {
                 pawn.SetFaction(Faction.OfPlayer);
             }
 
-            PawnComponentsUtility.AddAndRemoveDynamicComponents(pawn, true);
-            if (pawn.guest != null)
+            ApplyBoughtYoungRatkinStatus(pawn);
+            EndLeashForPet(pawn, false);
+            if (LeadYourPetUtility.BoughtYoungRatkinStatus == BoughtYoungRatkinStatus.Prisoner)
             {
-                pawn.guest.SetGuestStatus(Faction.OfPlayer, GuestStatus.Prisoner);
-                pawn.guest.resistance = LeadYourPetRules.ResolveTravelMouseEggPrisonerResistance();
-                pawn.guest.will = LeadYourPetRules.ResolveTravelMouseEggPrisonerWill();
+                TryMoveBoughtPrisonerNearPrisonBed(pawn);
             }
 
-            EndLeashForPet(pawn, false);
-            TryMoveBoughtPrisonerNearPrisonBed(pawn);
             ClearTravelStock(pawn);
             LeadYourPetUtility.ClearMouseDisasterVisitorCover(pawn);
             LeadYourPetUtility.NotifyMouseDisasterPawnIdentityChanged(pawn);
+        }
+
+        private static void ApplyBoughtYoungRatkinStatus(Pawn pawn)
+        {
+            if (pawn?.guest == null)
+            {
+                return;
+            }
+
+            switch (LeadYourPetUtility.BoughtYoungRatkinStatus)
+            {
+                case BoughtYoungRatkinStatus.Colonist:
+                    pawn.guest.SetGuestStatus(null, GuestStatus.Guest);
+                    break;
+                case BoughtYoungRatkinStatus.Slave:
+                    if (ModsConfig.IdeologyActive)
+                    {
+                        pawn.guest.SetGuestStatus(Faction.OfPlayer, GuestStatus.Slave);
+                        break;
+                    }
+
+                    goto default;
+                default:
+                    pawn.guest.SetGuestStatus(Faction.OfPlayer, GuestStatus.Prisoner);
+                    pawn.guest.resistance = LeadYourPetRules.ResolveTravelMouseEggPrisonerResistance();
+                    pawn.guest.will = LeadYourPetRules.ResolveTravelMouseEggPrisonerWill();
+                    break;
+            }
         }
 
         private static MouseEggOwnershipSnapshot ToOwnershipSnapshot(MouseEggState state)

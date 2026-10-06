@@ -238,6 +238,31 @@ namespace LeadYourPet
             value = selected;
         }
 
+        internal static void SelectBoughtStatus(Listing_Standard list, string label, ref BoughtYoungRatkinStatus value)
+        {
+            MethodInfo closed = select.MakeGenericMethod(typeof(BoughtYoungRatkinStatus));
+            BoughtYoungRatkinStatus[] choices = ModsConfig.IdeologyActive
+                ? new[] { BoughtYoungRatkinStatus.Colonist, BoughtYoungRatkinStatus.Prisoner, BoughtYoungRatkinStatus.Slave }
+                : new[] { BoughtYoungRatkinStatus.Colonist, BoughtYoungRatkinStatus.Prisoner };
+            BoughtYoungRatkinStatus selected = value;
+            Action<BoughtYoungRatkinStatus> chosen = next => selected = next;
+            closed.Invoke(null, new object[] { list, label, value, choices, (Func<BoughtYoungRatkinStatus, string>)BoughtStatusLabel, chosen });
+            value = selected;
+        }
+
+        static string BoughtStatusLabel(BoughtYoungRatkinStatus value)
+        {
+            switch (value)
+            {
+                case BoughtYoungRatkinStatus.Colonist:
+                    return "LeadYourPet_Settings_BoughtYoungRatkinStatus_Colonist".Translate();
+                case BoughtYoungRatkinStatus.Slave:
+                    return "LeadYourPet_Settings_BoughtYoungRatkinStatus_Slave".Translate();
+                default:
+                    return "LeadYourPet_Settings_BoughtYoungRatkinStatus_Prisoner".Translate();
+            }
+        }
+
         internal static object Entry(string id, string titleKey, string keywords, string contextKey = null)
         {
             return searchEntry.Invoke(new object[]
@@ -391,20 +416,22 @@ namespace LeadYourPet
             IrisMenusCompat.Anchor(list, "visitors-lead");
             IrisMenusCompat.Checkbox(list, "LeadYourPet_Settings_VisitorsLeadRatkinYoung".Translate(), ref settings.visitorsLeadRatkinYoung,
                 "LeadYourPet_Settings_VisitorsLeadRatkinYoung_Tooltip".Translate());
-            if (!travelCountVisible)
+            if (travelCountVisible)
             {
-                return;
+                IrisMenusCompat.Anchor(list, "travel-count", 34f);
+                if (travelCountBuffer.Length == 0)
+                {
+                    travelCountBuffer = settings.ordinaryTravelRatkinYoungCount.ToString();
+                }
+
+                IrisMenusCompat.Number(list, "LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount".Translate(settings.ordinaryTravelRatkinYoungCount),
+                    ref settings.ordinaryTravelRatkinYoungCount, ref travelCountBuffer, 0, LeadYourPetSettings.MaxOrdinaryTravelRatkinYoungCount);
+                settings.Clamp();
             }
 
-            IrisMenusCompat.Anchor(list, "travel-count", 34f);
-            if (travelCountBuffer.Length == 0)
-            {
-                travelCountBuffer = settings.ordinaryTravelRatkinYoungCount.ToString();
-            }
-
-            IrisMenusCompat.Number(list, "LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount".Translate(settings.ordinaryTravelRatkinYoungCount),
-                ref settings.ordinaryTravelRatkinYoungCount, ref travelCountBuffer, 0, LeadYourPetSettings.MaxOrdinaryTravelRatkinYoungCount);
-            settings.Clamp();
+            IrisMenusCompat.Anchor(list, "bought-status");
+            IrisMenusCompat.SelectBoughtStatus(list, "LeadYourPet_Settings_BoughtYoungRatkinStatus".Translate(),
+                ref settings.boughtYoungRatkinStatus);
         }
 
         void DrawMapExit(Listing_Standard list)
@@ -460,6 +487,8 @@ namespace LeadYourPet
             {
                 yield return IrisMenusCompat.Entry("travel-count", "LeadYourPet_Settings_OrdinaryTravelRatkinYoungCount", "caravan young ratkin count");
             }
+            yield return IrisMenusCompat.Entry("bought-status", "LeadYourPet_Settings_BoughtYoungRatkinStatus", "buy colonist prisoner slave trade 购买 殖民者 囚犯 奴隶",
+                "LeadYourPet_Settings_BoughtYoungRatkinStatus_Tooltip");
         }
 
         IEnumerable<object> SearchMapExit()

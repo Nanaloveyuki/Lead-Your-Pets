@@ -56,6 +56,49 @@ namespace LeadYourPet
                 && shouldIssueFollowPath;
         }
 
+        public static bool ShouldKeepFixedAnchorStill(bool anchorIsFixed, float distance, float leashLength, bool dragging)
+        {
+            return anchorIsFixed && !dragging && distance <= leashLength;
+        }
+
+        public static bool ShouldEvaluateTradeableYoungRatkin(bool kindWillTrade, bool isPawn)
+        {
+            return !kindWillTrade && isPawn;
+        }
+
+        public static bool ShouldPrepareTravelDeparture(int currentTick, int lastPreparedTick, int minIntervalTicks, bool forceImmediate, bool departing)
+        {
+            if (!departing)
+            {
+                return false;
+            }
+
+            if (forceImmediate)
+            {
+                return true;
+            }
+
+            return currentTick - lastPreparedTick >= minIntervalTicks;
+        }
+
+        public static bool TraderWillTradeYoungRatkin(bool kindWillTrade, bool isTradeableYoungRatkin)
+        {
+            return kindWillTrade || isTradeableYoungRatkin;
+        }
+
+        public static BoughtYoungRatkinStatus ResolveBoughtYoungRatkinStatus(BoughtYoungRatkinStatus configured, bool ideologyActive)
+        {
+            if (configured == BoughtYoungRatkinStatus.Slave && !ideologyActive)
+            {
+                return BoughtYoungRatkinStatus.Prisoner;
+            }
+
+            return configured == BoughtYoungRatkinStatus.Colonist
+                || configured == BoughtYoungRatkinStatus.Slave
+                ? configured
+                : BoughtYoungRatkinStatus.Prisoner;
+        }
+
         public static bool ShouldUseBidirectionalMouseEggAutoInteractions(bool playerControlled, bool canUseSingleDirection, bool masterSleeping)
         {
             return playerControlled && !canUseSingleDirection && !masterSleeping;

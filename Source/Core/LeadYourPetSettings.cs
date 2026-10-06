@@ -22,6 +22,7 @@ namespace LeadYourPet
         public bool allowAnimalPets = true;
         public bool allowRatkinYoungPets = true;
         public bool visitorsLeadRatkinYoung = true;
+        public BoughtYoungRatkinStatus boughtYoungRatkinStatus = BoughtYoungRatkinStatus.Prisoner;
         public LeashedPawnMapExitBehavior leashedPawnMapExitBehavior = LeashedPawnMapExitBehavior.StayInPlace;
         private HashSet<string> enabledModFeedFoods = new HashSet<string>();
         private HashSet<string> disabledVanillaFeedFoods = new HashSet<string>();
@@ -55,6 +56,7 @@ namespace LeadYourPet
             Scribe_Values.Look(ref allowRatkinYoungPets, "allowRatkinYoungPets", true);
             Scribe_Values.Look(ref visitorsLeadRatkinYoung, "visitorsLeadRatkinYoung", true);
             Scribe_Values.Look(ref leashedPawnMapExitBehavior, "leashedPawnMapExitBehavior", LeashedPawnMapExitBehavior.StayInPlace);
+            Scribe_Values.Look(ref boughtYoungRatkinStatus, "boughtYoungRatkinStatus", BoughtYoungRatkinStatus.Prisoner);
             Scribe_Collections.Look(ref enabledModFeedFoods, "enabledModFeedFoods", LookMode.Value);
             Scribe_Collections.Look(ref disabledVanillaFeedFoods, "disabledVanillaFeedFoods", LookMode.Value);
             if (enabledModFeedFoods == null) enabledModFeedFoods = new HashSet<string>();

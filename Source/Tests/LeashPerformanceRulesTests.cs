@@ -279,5 +279,26 @@ namespace LeadYourPet.Tests
                 hasCustomReport: false,
                 inspectStringAlreadyContainsReport: false));
         }
+
+        [Fact]
+        public void SkipsYoungRatkinTradeCheckWhenTheKindAlreadyTradesOrTheRowIsNotAPawn()
+        {
+            Assert.False(LeadYourPetRules.ShouldEvaluateTradeableYoungRatkin(kindWillTrade: true, isPawn: true));
+            Assert.False(LeadYourPetRules.ShouldEvaluateTradeableYoungRatkin(kindWillTrade: false, isPawn: false));
+            Assert.True(LeadYourPetRules.ShouldEvaluateTradeableYoungRatkin(kindWillTrade: false, isPawn: true));
+        }
+
+        [Fact]
+        public void PreparesADepartingLordOncePerCooldownUnlessForced()
+        {
+            Assert.True(LeadYourPetRules.ShouldPrepareTravelDeparture(
+                currentTick: 600, lastPreparedTick: 500, minIntervalTicks: 60, forceImmediate: false, departing: true));
+            Assert.False(LeadYourPetRules.ShouldPrepareTravelDeparture(
+                currentTick: 540, lastPreparedTick: 500, minIntervalTicks: 60, forceImmediate: false, departing: true));
+            Assert.True(LeadYourPetRules.ShouldPrepareTravelDeparture(
+                currentTick: 501, lastPreparedTick: 500, minIntervalTicks: 60, forceImmediate: true, departing: true));
+            Assert.False(LeadYourPetRules.ShouldPrepareTravelDeparture(
+                currentTick: 600, lastPreparedTick: -99999, minIntervalTicks: 60, forceImmediate: true, departing: false));
+        }
     }
 }

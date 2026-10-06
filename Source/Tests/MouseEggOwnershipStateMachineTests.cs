@@ -71,5 +71,30 @@ namespace LeadYourPet.Tests
                 wasTravelStock: true,
                 wasSellable: true));
         }
+
+        [Fact]
+        public void TraderAcceptsYoungRatkinEvenWhenTheKindDoesNotTradeHumans()
+        {
+            Assert.True(LeadYourPetRules.TraderWillTradeYoungRatkin(kindWillTrade: false, isTradeableYoungRatkin: true));
+            Assert.False(LeadYourPetRules.TraderWillTradeYoungRatkin(kindWillTrade: false, isTradeableYoungRatkin: false));
+            Assert.True(LeadYourPetRules.TraderWillTradeYoungRatkin(kindWillTrade: true, isTradeableYoungRatkin: false));
+        }
+
+        [Fact]
+        public void BoughtYoungRatkinSlaveFallsBackWithoutIdeology()
+        {
+            Assert.Equal(BoughtYoungRatkinStatus.Prisoner, LeadYourPetRules.ResolveBoughtYoungRatkinStatus(BoughtYoungRatkinStatus.Slave, ideologyActive: false));
+            Assert.Equal(BoughtYoungRatkinStatus.Slave, LeadYourPetRules.ResolveBoughtYoungRatkinStatus(BoughtYoungRatkinStatus.Slave, ideologyActive: true));
+            Assert.Equal(BoughtYoungRatkinStatus.Colonist, LeadYourPetRules.ResolveBoughtYoungRatkinStatus(BoughtYoungRatkinStatus.Colonist, ideologyActive: false));
+        }
+
+        [Fact]
+        public void FixedAnchorStaysStillInsideTheLeash()
+        {
+            Assert.True(LeadYourPetRules.ShouldKeepFixedAnchorStill(anchorIsFixed: true, distance: 8f, leashLength: 10f, dragging: false));
+            Assert.False(LeadYourPetRules.ShouldKeepFixedAnchorStill(anchorIsFixed: true, distance: 11f, leashLength: 10f, dragging: false));
+            Assert.False(LeadYourPetRules.ShouldKeepFixedAnchorStill(anchorIsFixed: false, distance: 4f, leashLength: 10f, dragging: false));
+            Assert.False(LeadYourPetRules.ShouldKeepFixedAnchorStill(anchorIsFixed: true, distance: 4f, leashLength: 10f, dragging: true));
+        }
     }
 }

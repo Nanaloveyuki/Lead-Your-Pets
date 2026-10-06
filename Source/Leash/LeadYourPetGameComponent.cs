@@ -21,6 +21,7 @@ namespace LeadYourPet
         private readonly Dictionary<Pawn, LeashLink> linkByPet = new Dictionary<Pawn, LeashLink>();
         private readonly Dictionary<Pawn, List<LeashLink>> linksByMaster = new Dictionary<Pawn, List<LeashLink>>();
         private readonly Dictionary<Pawn, MouseEggState> mouseEggStateByPawn = new Dictionary<Pawn, MouseEggState>();
+        private readonly Dictionary<int, int> departurePreparedTicks = new Dictionary<int, int>();
 
         public LeadYourPetGameComponent(Game game)
         {

@@ -596,8 +596,19 @@ namespace LeadYourPet
             {
                 return;
             }
-
             Thing followThing = LeadYourPetUtility.GetCurrentFollowThing(link);
+            bool fixedAnchor = link.AnchorMode != LeashAnchorMode.None && !ShouldTargetMovementRefresh(link);
+            if (LeadYourPetRules.ShouldKeepFixedAnchorStill(
+                anchorIsFixed: fixedAnchor,
+                distance: followThing != null
+                    ? followThing.Position.DistanceTo(link.Pet.Position)
+                    : link.AnchorCell.DistanceTo(link.Pet.Position),
+                leashLength: LeadYourPetUtility.MaxLeashLength,
+                dragging: link.IsDragging))
+            {
+                return;
+            }
+
             if (followThing != null && link.Pet.CanReach(followThing, PathEndMode.Touch, Danger.Deadly))
             {
                 if (LeadYourPetRules.ShouldIssueLeashFollowJob(

@@ -256,18 +256,18 @@ namespace LeadYourPet.Tests
         }
 
         [Fact]
-        public void PrepareClearsMouseEggPetLeash()
+        public void PrepareKeepsMouseEggPetLeash()
         {
-            AssertLeashIsClearedOnDeparture(LeashLinkKind.MouseEggPet);
+            AssertLeashStaysOnDeparture(LeashLinkKind.MouseEggPet);
         }
 
         [Fact]
-        public void PrepareClearsRatkinMotherBabyLeash()
+        public void PrepareKeepsRatkinMotherBabyLeash()
         {
-            AssertLeashIsClearedOnDeparture(LeashLinkKind.RatkinMotherBaby);
+            AssertLeashStaysOnDeparture(LeashLinkKind.RatkinMotherBaby);
         }
 
-        private void AssertLeashIsClearedOnDeparture(LeashLinkKind kind)
+        private void AssertLeashStaysOnDeparture(LeashLinkKind kind)
         {
             Pawn member = NewSpawnedPawn(lord, new IntVec3(1, 0, 1));
             Pawn master = NewSpawnedPawn(lord, new IntVec3(2, 0, 2));
@@ -277,9 +277,9 @@ namespace LeadYourPet.Tests
 
             component.PrepareTravelDeparture(lord);
 
-            Assert.Null(component.GetLinkForPet(member));
-            Assert.False(state.IsPet);
-            Assert.Null(state.CurrentMaster);
+            Assert.NotNull(component.GetLinkForPet(member));
+            Assert.True(state.IsPet);
+            Assert.Same(master, state.CurrentMaster);
             Assert.True(state.IsTravelStock);
             Assert.Same(lord, member.GetLord());
         }

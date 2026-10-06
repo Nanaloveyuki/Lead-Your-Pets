@@ -170,6 +170,46 @@ namespace LeadYourPet
         }
     }
 
+    [HarmonyPatch(typeof(Tradeable), nameof(Tradeable.TraderWillTrade), MethodType.Getter)]
+    public static class Patch_Tradeable_TraderWillTrade
+    {
+        public static void Postfix(Tradeable __instance, ref bool __result)
+        {
+            if (!LeadYourPetRules.ShouldEvaluateTradeableYoungRatkin(__result, __instance?.AnyThing is Pawn))
+            {
+                return;
+            }
+
+            Pawn pawn = __instance.AnyThing as Pawn;
+            if (!LeadYourPetUtility.TryGetCachedTradeableYoungRatkin(pawn.thingIDNumber, out bool tradeable))
+            {
+                tradeable = LeadYourPetUtility.IsTradeableYoungRatkin(pawn);
+                LeadYourPetUtility.CacheTradeableYoungRatkin(pawn.thingIDNumber, tradeable);
+            }
+
+            __result = LeadYourPetRules.TraderWillTradeYoungRatkin(__result, tradeable);
+        }
+    }
+
+    [HarmonyPatch(typeof(TradeSession), nameof(TradeSession.SetupWith))]
+    public static class Patch_TradeSession_SetupWith
+    {
+        public static void Prefix()
+        {
+            LeadYourPetUtility.ClearTradeableYoungRatkinCache();
+        }
+    }
+
+    [HarmonyPatch(typeof(TradeSession), nameof(TradeSession.Close))]
+    public static class Patch_TradeSession_Close
+    {
+        public static void Postfix()
+        {
+            LeadYourPetUtility.ClearTradeableYoungRatkinCache();
+        }
+    }
+
+
     [HarmonyPatch(typeof(Pawn_CarryTracker), nameof(Pawn_CarryTracker.TryStartCarry), typeof(Thing))]
     public static class Patch_PawnCarryTracker_TryStartCarry
     {

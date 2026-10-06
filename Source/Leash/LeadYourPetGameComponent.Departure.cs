@@ -9,11 +9,18 @@ namespace LeadYourPet
     {
         internal void PrepareTravelDeparture(Lord lord, bool interruptJobs = false)
         {
-            if (lord?.faction == null || lord.faction.IsPlayer
-                || !LeadYourPetUtility.IsDepartureToil(lord, lord.CurLordToil))
+            int ticksGame = Find.TickManager?.TicksGame ?? 0;
+            if (!LeadYourPetRules.ShouldPrepareTravelDeparture(
+                currentTick: ticksGame,
+                lastPreparedTick: lord != null && departurePreparedTicks.TryGetValue(lord.loadID, out int lastPreparedTick) ? lastPreparedTick : -99999,
+                minIntervalTicks: 60,
+                forceImmediate: interruptJobs,
+                departing: lord?.faction != null && !lord.faction.IsPlayer && LeadYourPetUtility.IsDepartureToil(lord, lord.CurLordToil)))
             {
                 return;
             }
+
+            departurePreparedTicks[lord.loadID] = ticksGame;
 
             // Do not remove Lord members: TravelArrived and escort duties still own them.
             for (int i = 0; i < lord.ownedPawns.Count; i++)
@@ -39,10 +46,12 @@ namespace LeadYourPet
                 {
                     link.MouseEggDutyState = LeashedMouseEggDutyState.FollowMaster;
                     UpdateMouseEggDutyReport(link);
-                    EndLink(link, false);
                 }
 
-                if (pet.Spawned && !GodHandsCompat.IsGrabbed(pet)
+                bool mobile = pet.Spawned && !pet.Downed && LeadYourPetUtility.CanMouseEggMove(pet)
+                    && !GodHandsCompat.IsGrabbed(pet)
+                    && !LeadYourPetUtility.IsExternalToddlerHold(pet.CurJobDef?.defName, pet.jobs?.curDriver?.GetType().FullName);
+                if (!mobile && pet.Spawned && !GodHandsCompat.IsGrabbed(pet)
                     && !LeadYourPetUtility.IsExternalToddlerHold(pet.CurJobDef?.defName, pet.jobs?.curDriver?.GetType().FullName)
                     && (hadLeashControl || interruptJobs || pet.jobs?.curDriver?.asleep == true))
                 {
@@ -50,9 +59,6 @@ namespace LeadYourPet
                     pet.stances?.CancelBusyStanceHard();
                     pet.jobs?.EndCurrentJob(JobCondition.InterruptForced, false);
                 }
-
-                state.IsPet = false;
-                state.CurrentMaster = null;
             }
         }
 

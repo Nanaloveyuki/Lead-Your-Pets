@@ -62,6 +62,22 @@ namespace LeadYourPet
                 Settings.ordinaryTravelRatkinYoungCount = Mathf.RoundToInt(listing.Slider(Settings.ordinaryTravelRatkinYoungCount, 0f, LeadYourPetSettings.MaxOrdinaryTravelRatkinYoungCount));
             }
 
+            listing.Label("LeadYourPet_Settings_BoughtYoungRatkinStatus".Translate().Resolve());
+            if (listing.RadioButton("LeadYourPet_Settings_BoughtYoungRatkinStatus_Colonist".Translate().Resolve(), Settings.boughtYoungRatkinStatus == BoughtYoungRatkinStatus.Colonist))
+            {
+                Settings.boughtYoungRatkinStatus = BoughtYoungRatkinStatus.Colonist;
+            }
+
+            if (listing.RadioButton("LeadYourPet_Settings_BoughtYoungRatkinStatus_Prisoner".Translate().Resolve(), Settings.boughtYoungRatkinStatus == BoughtYoungRatkinStatus.Prisoner))
+            {
+                Settings.boughtYoungRatkinStatus = BoughtYoungRatkinStatus.Prisoner;
+            }
+
+            if (ModsConfig.IdeologyActive && listing.RadioButton("LeadYourPet_Settings_BoughtYoungRatkinStatus_Slave".Translate().Resolve(), Settings.boughtYoungRatkinStatus == BoughtYoungRatkinStatus.Slave))
+            {
+                Settings.boughtYoungRatkinStatus = BoughtYoungRatkinStatus.Slave;
+            }
+
             Settings.Clamp();
 
             if (!Settings.infiniteLeash)

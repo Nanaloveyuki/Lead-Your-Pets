@@ -408,6 +408,16 @@ namespace LeadYourPet
                 || LeadYourPetRules.IsExternalToddlerHoldDriver(driverTypeName);
         }
 
+        private static int cachedDepartureLordId = int.MinValue;
+        private static LordToil cachedDepartureToilRef;
+        private static bool cachedDepartureResult;
+
+        internal static void ClearDepartureToilCache()
+        {
+            cachedDepartureLordId = int.MinValue;
+            cachedDepartureToilRef = null;
+        }
+
         public static bool ShouldPreserveMapExitMovement(Pawn pawn)
         {
             if (pawn == null)
@@ -430,14 +440,20 @@ namespace LeadYourPet
                 return false;
             }
 
-            if (toil is LordToil_ExitMap || toil is LordToil_TakeWoundedGuest
-                || toil.GetType().Name.StartsWith("LordToil_ExitMap", StringComparison.Ordinal))
+            int lordId = lord?.loadID ?? 0;
+            if (cachedDepartureLordId == lordId && ReferenceEquals(cachedDepartureToilRef, toil))
             {
-                return true;
+                return cachedDepartureResult;
             }
 
-            return lord?.LordJob is LordJob_VisitColony visit
-                && visit.exitSubgraph != null && visit.exitSubgraph.lordToils.Contains(toil);
+            bool departing = toil is LordToil_ExitMap || toil is LordToil_TakeWoundedGuest
+                || toil.GetType().Name.StartsWith("LordToil_ExitMap", StringComparison.Ordinal)
+                || (lord?.LordJob is LordJob_VisitColony visit
+                    && visit.exitSubgraph != null && visit.exitSubgraph.lordToils.Contains(toil));
+            cachedDepartureLordId = lordId;
+            cachedDepartureToilRef = toil;
+            cachedDepartureResult = departing;
+            return departing;
         }
 
         internal static bool IsNonPlayerTravelDeparture(Pawn pawn)
@@ -1240,6 +1256,53 @@ namespace LeadYourPet
         {
             MouseEggState state = Component?.GetMouseEggState(pawn);
             return state != null && state.IsTravelStock && state.SellAsPrisoner;
+        }
+
+        private static readonly Dictionary<int, bool> tradeableYoungRatkinCache = new Dictionary<int, bool>();
+
+        internal static void ClearTradeableYoungRatkinCache()
+        {
+            tradeableYoungRatkinCache.Clear();
+        }
+
+        internal static bool TryGetCachedTradeableYoungRatkin(int thingId, out bool tradeable)
+        {
+            return tradeableYoungRatkinCache.TryGetValue(thingId, out tradeable);
+        }
+
+        internal static void CacheTradeableYoungRatkin(int thingId, bool tradeable)
+        {
+            tradeableYoungRatkinCache[thingId] = tradeable;
+        }
+
+        public static bool IsTradeableYoungRatkin(Pawn pawn)
+        {
+            if (pawn == null || !pawn.RaceProps.Humanlike)
+            {
+                return false;
+            }
+
+            if (CanUseAsTraderChattel(pawn))
+            {
+                return true;
+            }
+
+            return IsMouseEgg(pawn)
+                && pawn.guest != null
+                && ((pawn.IsPrisonerOfColony && pawn.guest.PrisonerIsSecure)
+                    || (pawn.IsSlave && pawn.guest.SlaveIsSecure));
+        }
+
+        public static BoughtYoungRatkinStatus BoughtYoungRatkinStatus
+        {
+            get
+            {
+                return LeadYourPetRules.ResolveBoughtYoungRatkinStatus(
+                    LeadYourPetMod.Settings == null
+                        ? BoughtYoungRatkinStatus.Prisoner
+                        : LeadYourPetMod.Settings.boughtYoungRatkinStatus,
+                    ModsConfig.IdeologyActive);
+            }
         }
 
         public static bool ShouldBreakNonPlayerTravelLeashAfterAcquisition(LeashLink link)
